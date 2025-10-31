@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { JSX, useMemo } from "react";
 
 type HolidayType = "libur" | "cuti-bersama";
 
