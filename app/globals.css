@@ -1,5 +1,5 @@
-/* Tailwind v4 style */
-@import "tailwindcss/preflight";
+/* Tailwind directives (v3+/v4): */
+/* Use CSS @import so editors/linters that don't recognize @tailwind won't error */
 @import "tailwindcss";
 
 /* Util umum */
@@ -9,7 +9,15 @@ html, body { height: 100%; background: transparent; }
 
 /* Glass util */
 .glass {
-  @apply bg-white/20 border border-white/30 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.08)];
+  /* background: 20% white */
+  background-color: rgba(255, 255, 255, 0.2);
+  /* 1px solid white at 30% opacity */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  /* backdrop blur approximating 'backdrop-blur-xl' */
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  /* custom exact shadow (arbitrary values often fail with @apply) */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 /* Font smoothing */
