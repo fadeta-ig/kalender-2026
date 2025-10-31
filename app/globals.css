@@ -1,0 +1,19 @@
+/* Tailwind v4 style */
+@import "tailwindcss/preflight";
+@import "tailwindcss";
+
+/* Util umum */
+* { box-sizing: border-box; }
+html, body { height: 100%; background: transparent; }
+:root { color-scheme: light dark; }
+
+/* Glass util */
+.glass {
+  @apply bg-white/20 border border-white/30 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.08)];
+}
+
+/* Font smoothing */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
