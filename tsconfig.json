@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "framer-motion": ["./lib/motion"],
+      "zod": ["./lib/zod"]
     }
   },
   "include": [
