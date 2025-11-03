@@ -464,12 +464,7 @@ const sectionTitleClass = "text-2xl font-semibold text-slate-900 dark:text-slate
 const paragraphClass = "text-base text-slate-600 dark:text-slate-300";
 
 export default function Kalender2026(): JSX.Element {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+  const [isDark, setIsDark] = useState(false);
   const [typeFilter, setTypeFilter] = useState<HolidayType | "all">("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [quota, setQuota] = useState(12);
@@ -485,11 +480,20 @@ export default function Kalender2026(): JSX.Element {
     }
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const updateIsDark = (matches: boolean) => setIsDark(matches);
 
-    const handler = (event: MediaQueryListEvent) => setIsDark(event.matches);
-    mediaQuery.addEventListener("change", handler);
+    updateIsDark(mediaQuery.matches);
 
-    return () => mediaQuery.removeEventListener("change", handler);
+    const handler = (event: MediaQueryListEvent) => updateIsDark(event.matches);
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handler);
+
+      return () => mediaQuery.removeEventListener("change", handler);
+    }
+
+    mediaQuery.addListener(handler);
+
+    return () => mediaQuery.removeListener(handler);
   }, []);
 
   const unavailableDates = useMemo(() => {
