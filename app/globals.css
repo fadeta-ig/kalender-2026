@@ -25,3 +25,33 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  body[data-print-target="calendar"] #print-calendar,
+  body[data-print-target="calendar"] #print-calendar *,
+  body[data-print-target="recommendations"] #print-recommendations,
+  body[data-print-target="recommendations"] #print-recommendations * {
+    visibility: visible !important;
+  }
+
+  body[data-print-target="calendar"] #print-calendar,
+  body[data-print-target="recommendations"] #print-recommendations {
+    position: absolute;
+    inset: 0;
+    margin: 0 auto;
+    width: 100%;
+    box-shadow: none !important;
+  }
+
+  @page {
+    margin: 12mm;
+  }
+}
