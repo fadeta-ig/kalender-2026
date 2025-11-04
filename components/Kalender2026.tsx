@@ -580,11 +580,11 @@ export default function Kalender2026(): JSX.Element {
 
   return (
     <main
-      className="min-h-screen bg-gradient-to-br from-white via-sky-50/80 to-sky-200/70 text-slate-800"
+      className="min-h-screen bg-linear-to-br from-white via-sky-50/80 to-sky-200/70 text-slate-800"
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-12 sm:px-6 lg:px-8">
         <header
-          className="flex flex-col gap-6 rounded-[32px] border border-white/60 bg-white/70 p-6 shadow-xl shadow-sky-200/50 backdrop-blur-2xl transition hover:-translate-y-1 hover:shadow-2xl"
+          className="flex flex-col gap-6 rounded-4xl border border-white/60 bg-white/70 p-6 shadow-xl shadow-sky-200/50 backdrop-blur-2xl transition hover:-translate-y-1 hover:shadow-2xl"
         >
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
@@ -625,7 +625,7 @@ export default function Kalender2026(): JSX.Element {
             <button
               type="button"
               onClick={() => handleExport("calendar")}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-sky-400/70 bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-sky-200/60 transition duration-150 hover:bg-sky-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-sky-400/70 bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-sky-200/60 transition duration-150 hover:bg-sky-600 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-sky-400"
             >
               Ekspor Kalender (PDF)
             </button>
@@ -775,7 +775,7 @@ export default function Kalender2026(): JSX.Element {
                 <select
                   value={typeFilter}
                   onChange={(event) => setTypeFilter(event.target.value as HolidayType | "all")}
-                  className="h-11 min-w-[160px] rounded-2xl border border-white/60 bg-white/80 px-3 text-sm text-slate-700 shadow-sm shadow-sky-100/60 backdrop-blur transition duration-150 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                  className="h-11 min-w-40 rounded-2xl border border-white/60 bg-white/80 px-3 text-sm text-slate-700 shadow-sm shadow-sky-100/60 backdrop-blur transition duration-150 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
                 >
                   <option value="all">Semua</option>
                   <option value="libur">Libur Nasional</option>
@@ -863,7 +863,7 @@ export default function Kalender2026(): JSX.Element {
               <button
                 type="button"
                 onClick={() => handleExport("recommendations")}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-indigo-400/70 bg-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-200/60 transition duration-150 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-indigo-400/70 bg-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-200/60 transition duration-150 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
               >
                 Ekspor Rekomendasi (PDF)
               </button>
@@ -876,7 +876,7 @@ export default function Kalender2026(): JSX.Element {
                   <select
                     value={selectedPreset}
                     onChange={(event) => setSelectedPreset(event.target.value)}
-                    className="h-12 min-w-[240px] rounded-2xl border border-white/60 bg-white/80 px-3 text-sm text-slate-700 shadow-sm shadow-sky-100/60 transition duration-150 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                    className="h-12 min-w-60 rounded-2xl border border-white/60 bg-white/80 px-3 text-sm text-slate-700 shadow-sm shadow-sky-100/60 transition duration-150 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200"
                   >
                     {RECOMMENDATION_PRESETS.map((preset) => (
                       <option key={preset.id} value={preset.id}>
@@ -915,7 +915,7 @@ export default function Kalender2026(): JSX.Element {
                   return (
                     <article
                       key={item.id}
-                      className="flex flex-col gap-4 rounded-3xl border border-cyan-200/80 bg-gradient-to-br from-white/85 via-sky-50/80 to-cyan-100/80 p-5 text-slate-800 shadow-lg shadow-sky-100/70 transition duration-200 hover:-translate-y-0.5 hover:shadow-2xl backdrop-blur-xl"
+                      className="flex flex-col gap-4 rounded-3xl border border-cyan-200/80 bg-linear-to-br from-white/85 via-sky-50/80 to-cyan-100/80 p-5 text-slate-800 shadow-lg shadow-sky-100/70 transition duration-200 hover:-translate-y-0.5 hover:shadow-2xl backdrop-blur-xl"
                     >
                       <div>
                         <h3 className="text-lg font-semibold text-slate-800">{formatRangeLabel(item.range.start, item.range.end)}</h3>
@@ -957,7 +957,7 @@ export default function Kalender2026(): JSX.Element {
                         <button
                           type="button"
                           onClick={() => toggleFavorite(item.id)}
-                          className={`inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl px-4 text-sm font-semibold transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
+                          className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-semibold transition duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
                             isFavorite
                               ? "bg-sky-600 text-white hover:bg-sky-700"
                               : "bg-white/80 text-sky-700 shadow-sm hover:bg-sky-100"
@@ -969,7 +969,7 @@ export default function Kalender2026(): JSX.Element {
                         <button
                           type="button"
                           onClick={() => copyRecommendation(item)}
-                          className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl bg-sky-500 px-4 text-sm font-semibold text-white shadow-md shadow-sky-200/60 transition duration-150 hover:bg-sky-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-sky-500 px-4 text-sm font-semibold text-white shadow-md shadow-sky-200/60 transition duration-150 hover:bg-sky-600 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-sky-400"
                         >
                           Salin Rekomendasi
                         </button>
