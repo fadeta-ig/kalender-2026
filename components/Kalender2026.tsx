@@ -1,8 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { z } from "zod";
 
 type HolidayType = "libur" | "cuti-bersama";
 
@@ -23,12 +22,11 @@ type CalendarDay = {
 
 type CalendarMonth = {
   name: string;
+  monthIndex: number;
   weeks: CalendarDay[][];
 };
 
 type RangeKey = "Q1" | "Q2" | "Q3" | "Q4" | "FULL";
-
-type PreferenceOption = "monday" | "friday";
 
 type Recommendation = {
   id: string;
@@ -43,8 +41,15 @@ type Recommendation = {
 type RecommendationOptions = {
   quota: number;
   range: RangeKey;
-  preference: PreferenceOption[];
+  preference: ("monday" | "friday")[];
   unavailable: string[];
+};
+
+type RecommendationPreset = {
+  id: string;
+  label: string;
+  description: string;
+  options: RecommendationOptions;
 };
 
 const YEAR = 2026;
@@ -234,6 +239,11 @@ const TYPE_ICON: Record<HolidayType, string> = {
   "cuti-bersama": "🧩",
 };
 
+const PREFERENCE_LABELS: Record<"monday" | "friday", string> = {
+  monday: "Senin",
+  friday: "Jumat",
+};
+
 const WEEKDAYS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
 
 const QUARTER_RANGE: Record<RangeKey, { startMonth: number; endMonth: number; label: string }> = {
@@ -244,16 +254,44 @@ const QUARTER_RANGE: Record<RangeKey, { startMonth: number; endMonth: number; la
   FULL: { startMonth: 0, endMonth: 11, label: "Satu Tahun Penuh" },
 };
 
-const recommendationSchema = z.object({
-  quota: z.number().int().min(1).max(20),
-  range: z.enum(["Q1", "Q2", "Q3", "Q4", "FULL"] as const),
-  preference: z
-    .array(z.enum(["monday", "friday"] as const))
-    .refine((value) => value.every((item, index, arr) => arr.indexOf(item) === index), "Preferensi duplikat"),
-  unavailable: z
-    .array(z.string().regex(/^2026-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/, "Gunakan format YYYY-MM-DD"))
-    .optional(),
-});
+const RECOMMENDATION_PRESETS: RecommendationPreset[] = [
+  {
+    id: "full-friday",
+    label: "Satu Tahun • Prioritas Jumat",
+    description: "Memaksimalkan libur sepanjang tahun dengan fokus pada jembatan akhir pekan Jumat.",
+    options: { quota: 12, range: "FULL", preference: ["friday"], unavailable: [] },
+  },
+  {
+    id: "full-hybrid",
+    label: "Satu Tahun • Senin & Jumat",
+    description: "Rekomendasi paling fleksibel untuk memanfaatkan hari kejepit Senin dan Jumat.",
+    options: { quota: 14, range: "FULL", preference: ["monday", "friday"], unavailable: [] },
+  },
+  {
+    id: "q1-refresh",
+    label: "Q1 • Awal Tahun",
+    description: "Sorotan libur panjang kuartal awal agar tahun dimulai dengan energi baru.",
+    options: { quota: 6, range: "Q1", preference: ["friday"], unavailable: [] },
+  },
+  {
+    id: "q2-midyear",
+    label: "Q2 • Tengah Tahun",
+    description: "Optimasi libur Idul Adha, Waisak, dan cuti bersama pertengahan tahun.",
+    options: { quota: 6, range: "Q2", preference: ["friday"], unavailable: [] },
+  },
+  {
+    id: "q3-energy",
+    label: "Q3 • Energi Kemerdekaan",
+    description: "Rangkaian libur sekitar Agustus untuk menutup musim panas dengan istimewa.",
+    options: { quota: 5, range: "Q3", preference: ["friday"], unavailable: [] },
+  },
+  {
+    id: "q4-holidays",
+    label: "Q4 • Akhir Tahun",
+    description: "Rencana cuti akhir tahun menjelang Natal dan pergantian tahun.",
+    options: { quota: 6, range: "Q4", preference: ["friday"], unavailable: [] },
+  },
+];
 
 const formatDate = (iso: string, options: Intl.DateTimeFormatOptions = {}): string => {
   const formatter = new Intl.DateTimeFormat("id-ID", {
@@ -313,6 +351,7 @@ const buildCalendar = (): CalendarMonth[] => {
 
     months.push({
       name: monthFormatter.format(first),
+      monthIndex: month,
       weeks: chunk(days, 7),
     });
   }
@@ -471,51 +510,29 @@ const paragraphClass = "text-base text-slate-600";
 export default function Kalender2026(): JSX.Element {
   const [typeFilter, setTypeFilter] = useState<HolidayType | "all">("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [quota, setQuota] = useState(12);
-  const [range, setRange] = useState<RangeKey>("FULL");
-  const [preference, setPreference] = useState<PreferenceOption[]>(["friday"]);
-  const [unavailableInput, setUnavailableInput] = useState("");
+  const [selectedPreset, setSelectedPreset] = useState<string>(RECOMMENDATION_PRESETS[0].id);
   const [favorites, setFavorites] = useState<string[]>([]);
   const reduceMotion = useReducedMotion();
 
-  const unavailableDates = useMemo(() => {
-    return unavailableInput
-      .split(/[\n,]/)
-      .map((value) => value.trim())
-      .filter(Boolean);
-  }, [unavailableInput]);
-
-  const schemaInput = useMemo(
-    () => ({ quota, range, preference, unavailable: unavailableDates }),
-    [quota, range, preference, unavailableDates]
-  );
-
-  const schemaResult = useMemo(() => recommendationSchema.safeParse(schemaInput), [schemaInput]);
-  const schemaErrors = useMemo<Record<string, string[]>>(() => {
-    if (schemaResult.success) {
-      return {};
-    }
-    return schemaResult.error.formErrors.fieldErrors;
-  }, [schemaResult]);
-
-  const unavailableErrorMessages = useMemo(() => {
-    return Object.entries(schemaErrors)
-      .filter(([key]) => key.startsWith("unavailable"))
-      .flatMap(([, messages]) => messages);
-  }, [schemaErrors]);
+  const activePreset = useMemo(() => {
+    return RECOMMENDATION_PRESETS.find((preset) => preset.id === selectedPreset) ?? RECOMMENDATION_PRESETS[0];
+  }, [selectedPreset]);
 
   const recommendations = useMemo(() => {
-    if (!schemaResult.success) {
-      return [];
+    return computeRecommendations(activePreset.options);
+  }, [activePreset]);
+
+  const rangeLabel = useMemo(() => {
+    return QUARTER_RANGE[activePreset.options.range].label;
+  }, [activePreset]);
+
+  const preferenceSummary = useMemo(() => {
+    if (activePreset.options.preference.length === 0) {
+      return "Tanpa preferensi khusus";
     }
 
-    return computeRecommendations({
-      quota: schemaResult.data.quota,
-      range: schemaResult.data.range,
-      preference: schemaResult.data.preference,
-      unavailable: schemaResult.data.unavailable ?? [],
-    });
-  }, [schemaResult]);
+    return activePreset.options.preference.map((item) => PREFERENCE_LABELS[item]).join(" & ");
+  }, [activePreset]);
 
   const calendarMonths = useMemo(() => buildCalendar(), []);
   const filteredHolidays = useMemo(() => {
@@ -532,15 +549,6 @@ export default function Kalender2026(): JSX.Element {
     });
   }, [typeFilter, searchTerm]);
 
-  const togglePreference = (option: PreferenceOption) => {
-    setPreference((prev) => {
-      if (prev.includes(option)) {
-        return prev.filter((item) => item !== option);
-      }
-      return [...prev, option];
-    });
-  };
-
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]));
   };
@@ -556,6 +564,27 @@ export default function Kalender2026(): JSX.Element {
       alert("Gagal menyalin rekomendasi. Salin secara manual.");
     }
   };
+
+  const handleExport = useCallback((target: "calendar" | "recommendations") => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const { body } = document;
+    const previousTarget = body.dataset.printTarget ?? "";
+    body.dataset.printTarget = target;
+
+    window.requestAnimationFrame(() => {
+      window.print();
+      window.requestAnimationFrame(() => {
+        if (previousTarget) {
+          body.dataset.printTarget = previousTarget;
+        } else {
+          delete body.dataset.printTarget;
+        }
+      });
+    });
+  }, []);
 
   const baseSectionProps = reduceMotion ? {} : motionConfig;
 
@@ -600,18 +629,26 @@ export default function Kalender2026(): JSX.Element {
 
         <motion.section
           {...baseSectionProps}
+          id="print-calendar"
           className="flex flex-col gap-6"
           aria-labelledby="kalender-utama-heading"
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <h2 id="kalender-utama-heading" className={sectionTitleClass}>
               Kalender 2026
             </h2>
-            <p className={paragraphClass}>
-              Dua belas bulan ditampilkan dalam grid responsif. Hari kerja, akhir pekan, dan tanggal libur diberi aksen warna
-              lembut untuk memudahkan pemindaian cepat tanpa menumpuk teks di setiap tanggal.
-            </p>
+            <button
+              type="button"
+              onClick={() => handleExport("calendar")}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-sky-400/70 bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-sky-200/60 transition duration-150 hover:bg-sky-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+            >
+              Ekspor Kalender (PDF)
+            </button>
           </div>
+          <p className={paragraphClass}>
+            Dua belas bulan ditampilkan dalam grid responsif. Hari kerja, akhir pekan, dan tanggal libur diberi aksen warna
+            lembut untuk memudahkan pemindaian cepat tanpa menumpuk teks di setiap tanggal.
+          </p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {calendarMonths.map((month) => (
               <article
@@ -631,31 +668,43 @@ export default function Kalender2026(): JSX.Element {
                         {week.map((day) => {
                           const isHoliday = day.events.some((event) => event.type === "libur");
                           const isJointLeave = day.events.some((event) => event.type === "cuti-bersama");
+                          const eventTitle = day.events
+                            .map((event) => `${TYPE_LABELS[event.type]} • ${event.name}`)
+                            .join("\n");
 
                           const baseClasses = [
-                            "flex min-h-[68px] flex-col rounded-2xl border border-white/60 bg-white/60 px-2 py-1 text-xs text-slate-600 shadow-sm shadow-sky-100/40 backdrop-blur",
-                            day.isCurrentMonth ? "opacity-100" : "opacity-60",
+                            "flex min-h-[72px] flex-col rounded-2xl border border-white/60 bg-white/60 px-2 py-1 text-xs shadow-sm shadow-sky-100/40 backdrop-blur transition-colors",
+                            day.isCurrentMonth ? "opacity-100" : "opacity-70",
                           ];
 
                           if (!day.isCurrentMonth) {
-                            baseClasses.push("bg-white/40 text-slate-400");
-                          }
-
-                          if (day.isWeekend) {
-                            baseClasses.push("text-rose-500 font-semibold");
+                            baseClasses.push("bg-white/40");
                           }
 
                           if (isHoliday) {
-                            baseClasses.push("border-sky-200/80 bg-sky-50/80 text-sky-700 shadow-sky-200/70");
+                            baseClasses.push("border-rose-200/80 bg-rose-50/80 shadow-rose-200/70");
+                          } else if (isJointLeave) {
+                            baseClasses.push("border-indigo-200/80 bg-indigo-50/80 shadow-indigo-200/70");
+                          } else if (day.isWeekend) {
+                            baseClasses.push("border-rose-100/60 bg-rose-50/50");
                           }
 
-                          if (isJointLeave) {
-                            baseClasses.push("border-indigo-200/80 bg-indigo-50/80 text-indigo-700 shadow-indigo-200/70");
+                          const labelClasses = ["text-sm font-semibold"];
+                          if (!day.isCurrentMonth) {
+                            labelClasses.push("text-slate-400");
+                          } else if (isHoliday) {
+                            labelClasses.push("text-rose-600");
+                          } else if (isJointLeave) {
+                            labelClasses.push("text-indigo-600");
+                          } else if (day.isWeekend) {
+                            labelClasses.push("text-rose-500");
+                          } else {
+                            labelClasses.push("text-slate-700");
                           }
 
                           return (
-                            <div key={day.iso} className={baseClasses.join(" ")}>
-                              <span className="text-sm font-semibold text-slate-700">
+                            <div key={day.iso} className={baseClasses.join(" ")} title={eventTitle || undefined}>
+                              <span className={labelClasses.join(" ")}>
                                 {day.label}
                               </span>
                               <div className="mt-auto flex flex-wrap items-center gap-1 pt-2">
@@ -663,7 +712,6 @@ export default function Kalender2026(): JSX.Element {
                                   <span
                                     key={`${day.iso}-${event.type}-${event.name}`}
                                     className={`inline-flex h-2.5 w-2.5 items-center justify-center rounded-full shadow-sm shadow-slate-400/30 ${TYPE_DOT[event.type]}`}
-                                    title={`${TYPE_LABELS[event.type]} • ${event.name}`}
                                   >
                                     <span className="sr-only">
                                       {`${TYPE_LABELS[event.type]}: ${event.name}`}
@@ -678,6 +726,45 @@ export default function Kalender2026(): JSX.Element {
                     ))}
                   </div>
                 </div>
+                {(() => {
+                  const monthEvents = EVENTS_2026.filter(
+                    (event) => new Date(event.date).getMonth() === month.monthIndex
+                  );
+
+                  if (monthEvents.length === 0) {
+                    return null;
+                  }
+
+                  return (
+                    <div className="mt-4 rounded-2xl border border-white/60 bg-white/70 p-3 shadow-inner shadow-sky-100/60">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                        Sorotan Libur Bulan Ini
+                      </p>
+                      <ul className="mt-2 space-y-2 text-xs">
+                        {monthEvents.map((event) => (
+                          <li
+                            key={`${event.date}-${event.name}`}
+                            className="rounded-2xl border border-white/60 bg-white/80 px-3 py-2 text-slate-600 shadow-sm"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="space-y-1">
+                                <p className="text-xs font-semibold text-slate-700">
+                                  {formatDate(event.date)} · {event.name}
+                                </p>
+                                <p className="text-[11px] leading-snug text-slate-500">{event.description}</p>
+                              </div>
+                              <span
+                                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold backdrop-blur ${TYPE_BADGE[event.type]}`}
+                              >
+                                {TYPE_LABELS[event.type]}
+                              </span>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })()}
               </article>
             ))}
           </div>
@@ -776,174 +863,140 @@ export default function Kalender2026(): JSX.Element {
 
           <motion.section
             {...baseSectionProps}
+            id="print-recommendations"
             className="flex flex-col gap-8"
             aria-labelledby="rekomendasi-heading"
           >
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <h2 id="rekomendasi-heading" className={sectionTitleClass}>
                   Rekomendasi Cuti AI
                 </h2>
                 <p className={paragraphClass}>
-                  Atur kuota cuti, rentang analisis, dan preferensi jembatan akhir pekan. Mesin rekomendasi akan mencari
-                  kombinasi terbaik yang memaksimalkan libur panjang.
+                  Pilih skenario terbaik melalui dropdown untuk langsung mendapatkan susunan cuti berantai dengan sentuhan
+                  kecerdasan buatan.
                 </p>
               </div>
+              <button
+                type="button"
+                onClick={() => handleExport("recommendations")}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-indigo-400/70 bg-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-200/60 transition duration-150 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+              >
+                Ekspor Rekomendasi (PDF)
+              </button>
             </div>
 
-            <form
-              className="grid gap-4 rounded-3xl border border-white/60 bg-white/75 p-6 shadow-lg shadow-sky-100/70 backdrop-blur-xl md:grid-cols-2"
-            aria-describedby="form-error"
-          >
-            <div className="flex flex-col gap-3">
-              <label className="flex flex-col text-sm font-medium text-slate-700">
-                Kuota cuti tahunan
-                <input
-                  type="number"
-                  min={1}
-                  max={20}
-                  value={quota}
-                  onChange={(event) => setQuota(Number(event.target.value))}
-                  className="mt-1 h-11 rounded-2xl border border-white/60 bg-white/80 px-3 text-sm text-slate-700 shadow-sm shadow-sky-100/60 transition duration-150 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
-                />
-              </label>
-              <label className="flex flex-col text-sm font-medium text-slate-700">
-                Pilih rentang analisis
-                <select
-                  value={range}
-                  onChange={(event) => setRange(event.target.value as RangeKey)}
-                  className="mt-1 h-11 rounded-2xl border border-white/60 bg-white/80 px-3 text-sm text-slate-700 shadow-sm shadow-sky-100/60 transition duration-150 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
-                >
-                  {Object.entries(QUARTER_RANGE).map(([key, value]) => (
-                    <option key={key} value={key}>
-                      {value.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <fieldset className="flex flex-col gap-3 text-sm text-slate-700">
-                <legend className="font-medium">Preferensi jembatan akhir pekan</legend>
-                <div className="flex flex-wrap gap-3">
-                  {(
-                    [
-                      { label: "Senin", value: "monday" },
-                      { label: "Jumat", value: "friday" },
-                    ] as const
-                  ).map((option) => (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => togglePreference(option.value)}
-                      className={`inline-flex min-h-[44px] min-w-[120px] items-center justify-center rounded-2xl border px-4 text-sm font-semibold transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
-                        preference.includes(option.value)
-                          ? "border-sky-400 bg-sky-100/80 text-sky-700 shadow-sky-100/60"
-                          : "border-white/60 bg-white/70 text-slate-600 shadow-sm hover:border-sky-300 hover:text-sky-600"
-                      }`}
-                      aria-pressed={preference.includes(option.value)}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
+            <div className="flex flex-col gap-4 rounded-3xl border border-white/60 bg-white/75 p-6 shadow-lg shadow-sky-100/70 backdrop-blur-xl">
+              <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <label className="flex flex-col text-sm font-medium text-slate-700">
+                  <span className="mb-2 text-sm font-semibold text-slate-700">Pilih skenario rekomendasi</span>
+                  <select
+                    value={selectedPreset}
+                    onChange={(event) => setSelectedPreset(event.target.value)}
+                    className="h-12 min-w-[240px] rounded-2xl border border-white/60 bg-white/80 px-3 text-sm text-slate-700 shadow-sm shadow-sky-100/60 transition duration-150 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                  >
+                    {RECOMMENDATION_PRESETS.map((preset) => (
+                      <option key={preset.id} value={preset.id}>
+                        {preset.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div className="grid gap-2 rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-sm text-slate-600 shadow-inner shadow-sky-100/60">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Kuota Cuti</span>
+                    <span className="text-sm font-semibold text-slate-800">{activePreset.options.quota} hari</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Rentang Analisis</span>
+                    <span className="text-sm font-semibold text-slate-800">{rangeLabel}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Preferensi</span>
+                    <span className="text-sm font-semibold text-slate-800">{preferenceSummary}</span>
+                  </div>
                 </div>
-                {schemaErrors.preference && (
-                  <p className="text-sm text-rose-500">{schemaErrors.preference.join(", ")}</p>
-                )}
-              </fieldset>
+              </div>
+              <p className="text-sm text-slate-600">{activePreset.description}</p>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <label className="flex flex-col text-sm font-medium text-slate-700">
-                Tanggal tidak tersedia (pisahkan dengan koma atau baris baru)
-                <textarea
-                  value={unavailableInput}
-                  onChange={(event) => setUnavailableInput(event.target.value)}
-                  placeholder="Contoh: 2026-03-30, 2026-06-12"
-                  className="mt-1 min-h-[120px] rounded-2xl border border-white/60 bg-white/80 px-3 py-2 text-sm text-slate-700 shadow-sm shadow-sky-100/60 transition duration-150 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-200"
-                />
-              </label>
-              {unavailableErrorMessages.length > 0 && (
-                <p className="text-sm text-rose-500">{unavailableErrorMessages.join(", ")}</p>
+            <div className="grid gap-4 md:grid-cols-2">
+              {recommendations.length === 0 ? (
+                <p className="rounded-3xl border border-sky-200/70 bg-sky-50/80 px-4 py-6 text-sm text-sky-800">
+                  Belum ditemukan kombinasi libur panjang untuk skenario <strong>{activePreset.label}</strong>. Coba pilih
+                  skenario lain untuk melihat alternatif rekomendasi.
+                </p>
+              ) : (
+                recommendations.map((item) => {
+                  const isFavorite = favorites.includes(item.id);
+                  return (
+                    <article
+                      key={item.id}
+                      className="flex flex-col gap-4 rounded-3xl border border-cyan-200/80 bg-gradient-to-br from-white/85 via-sky-50/80 to-cyan-100/80 p-5 text-slate-800 shadow-lg shadow-sky-100/70 transition duration-200 hover:-translate-y-0.5 hover:shadow-2xl backdrop-blur-xl"
+                    >
+                      <div>
+                        <h3 className="text-lg font-semibold text-slate-800">{formatRangeLabel(item.range.start, item.range.end)}</h3>
+                        <p className="mt-1 text-sm font-medium text-sky-800">{item.summary}</p>
+                        <p className="mt-1 text-sm text-sky-700/90">{item.reason}</p>
+                      </div>
+                      <div className="space-y-3 text-sm">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wide text-sky-800">Ambil cuti pada</p>
+                          <ul className="mt-1 space-y-2">
+                            {item.leaveDates.map((date) => (
+                              <li
+                                key={date}
+                                className="flex items-center justify-between rounded-2xl border border-white/70 bg-white/80 px-3 py-2 text-slate-700 shadow-sm shadow-sky-100/60"
+                              >
+                                <span>{formatWeekdayDate(date)}</span>
+                                <span className="text-xs font-semibold uppercase tracking-wide text-sky-700">Cuti</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        {item.highlights.length > 0 && (
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-wide text-sky-800">Ditopang oleh</p>
+                            <ul className="mt-1 space-y-1">
+                              {item.highlights.map((highlight) => (
+                                <li
+                                  key={highlight}
+                                  className="rounded-2xl border border-white/70 bg-white/75 px-3 py-2 text-slate-700 shadow-sm shadow-sky-100/60"
+                                >
+                                  {highlight}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                      <div className="mt-auto flex flex-wrap gap-3">
+                        <button
+                          type="button"
+                          onClick={() => toggleFavorite(item.id)}
+                          className={`inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl px-4 text-sm font-semibold transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
+                            isFavorite
+                              ? "bg-sky-600 text-white hover:bg-sky-700"
+                              : "bg-white/80 text-sky-700 shadow-sm hover:bg-sky-100"
+                          }`}
+                          aria-pressed={isFavorite}
+                        >
+                          {isFavorite ? "Favorit" : "Tambah ke Favorit"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => copyRecommendation(item)}
+                          className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl bg-sky-500 px-4 text-sm font-semibold text-white shadow-md shadow-sky-200/60 transition duration-150 hover:bg-sky-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+                        >
+                          Salin Rekomendasi
+                        </button>
+                      </div>
+                    </article>
+                  );
+                })
               )}
             </div>
-          </form>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            {schemaResult.success && recommendations.length === 0 && (
-              <p className="rounded-3xl border border-sky-200/70 bg-sky-50/80 px-4 py-6 text-sm text-sky-800">
-                Tidak ditemukan kombinasi libur panjang untuk parameter yang dipilih. Coba ubah kuota cuti atau hilangkan
-                beberapa tanggal yang tidak tersedia.
-              </p>
-            )}
-
-            {recommendations.map((item) => {
-              const isFavorite = favorites.includes(item.id);
-              return (
-                <article
-                  key={item.id}
-                  className="flex flex-col gap-4 rounded-3xl border border-cyan-200/80 bg-gradient-to-br from-white/85 via-sky-50/80 to-cyan-100/80 p-5 text-slate-800 shadow-lg shadow-sky-100/70 transition duration-200 hover:-translate-y-0.5 hover:shadow-2xl backdrop-blur-xl"
-                >
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-800">{formatRangeLabel(item.range.start, item.range.end)}</h3>
-                    <p className="mt-1 text-sm font-medium text-sky-800">{item.summary}</p>
-                    <p className="mt-1 text-sm text-sky-700/90">{item.reason}</p>
-                  </div>
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-sky-800">Ambil cuti pada</p>
-                      <ul className="mt-1 space-y-2">
-                        {item.leaveDates.map((date) => (
-                          <li
-                            key={date}
-                            className="flex items-center justify-between rounded-2xl border border-white/70 bg-white/80 px-3 py-2 text-slate-700 shadow-sm shadow-sky-100/60"
-                          >
-                            <span>{formatWeekdayDate(date)}</span>
-                            <span className="text-xs font-semibold uppercase tracking-wide text-sky-700">Cuti</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    {item.highlights.length > 0 && (
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-sky-800">Ditopang oleh</p>
-                        <ul className="mt-1 space-y-1">
-                          {item.highlights.map((highlight) => (
-                            <li
-                              key={highlight}
-                              className="rounded-2xl border border-white/70 bg-white/75 px-3 py-2 text-slate-700 shadow-sm shadow-sky-100/60"
-                            >
-                              {highlight}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                  <div className="mt-auto flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      onClick={() => toggleFavorite(item.id)}
-                      className={`inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl px-4 text-sm font-semibold transition duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 ${
-                        isFavorite
-                          ? "bg-sky-600 text-white hover:bg-sky-700"
-                          : "bg-white/80 text-sky-700 shadow-sm hover:bg-sky-100"
-                      }`}
-                      aria-pressed={isFavorite}
-                    >
-                      {isFavorite ? "Favorit" : "Tambah ke Favorit"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => copyRecommendation(item)}
-                      className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-2xl bg-sky-500 px-4 text-sm font-semibold text-white shadow-md shadow-sky-200/60 transition duration-150 hover:bg-sky-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
-                    >
-                      Salin Rekomendasi
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </motion.section>
+          </motion.section>
 
         <motion.section
           {...baseSectionProps}
