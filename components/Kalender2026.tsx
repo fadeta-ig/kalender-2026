@@ -520,23 +520,19 @@ export default function Kalender2026(): JSX.Element {
     }
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const updateIsDark = (matches: boolean) => setIsDark(matches);
 
-    updateIsDark(mediaQuery.matches);
-
-    const handler = (event: MediaQueryListEvent) => updateIsDark(event.matches);
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", handler);
-
-      return () => mediaQuery.removeEventListener("change", handler);
-    }
-
-    const handleMediaChange = (event: MediaQueryListEvent) => {
+    const applySystemPreference = (matches: boolean) => {
       if (getStoredTheme()) {
         return;
       }
 
-      setTheme(event.matches ? "dark" : "light");
+      setTheme(matches ? "dark" : "light");
+    };
+
+    applySystemPreference(mediaQuery.matches);
+
+    const handleMediaChange = (event: MediaQueryListEvent) => {
+      applySystemPreference(event.matches);
     };
 
     const handleStorage = (event: StorageEvent) => {
