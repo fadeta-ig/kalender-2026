@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { z } from "zod";
 
@@ -462,14 +462,49 @@ const motionConfig = {
 
 const sectionTitleClass = "text-2xl font-semibold text-slate-900 dark:text-slate-100";
 const paragraphClass = "text-base text-slate-600 dark:text-slate-300";
+const THEME_STORAGE_KEY = "kalender-2026:theme";
+
+const getStoredTheme = (): "light" | "dark" | null => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    const value = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return value === "light" || value === "dark" ? value : null;
+  } catch (error) {
+    console.warn("Unable to read stored theme preference", error);
+    return null;
+  }
+};
+
+const persistTheme = (value: "light" | "dark" | null) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    if (value) {
+      window.localStorage.setItem(THEME_STORAGE_KEY, value);
+    } else {
+      window.localStorage.removeItem(THEME_STORAGE_KEY);
+    }
+  } catch (error) {
+    console.warn("Unable to persist theme preference", error);
+  }
+};
+
+const getSystemTheme = (): "light" | "dark" => {
+  if (typeof window === "undefined") {
+    return "light";
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
 
 export default function Kalender2026(): JSX.Element {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+  const [theme, setTheme] = useState<"light" | "dark">(() => getStoredTheme() ?? getSystemTheme());
+  const [isThemeReady, markThemeReady] = useReducer(() => true, false);
   const [typeFilter, setTypeFilter] = useState<HolidayType | "all">("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [quota, setQuota] = useState(12);
@@ -486,11 +521,63 @@ export default function Kalender2026(): JSX.Element {
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
-    const handler = (event: MediaQueryListEvent) => setIsDark(event.matches);
-    mediaQuery.addEventListener("change", handler);
+    const handleMediaChange = (event: MediaQueryListEvent) => {
+      if (getStoredTheme()) {
+        return;
+      }
 
-    return () => mediaQuery.removeEventListener("change", handler);
+      setTheme(event.matches ? "dark" : "light");
+    };
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== THEME_STORAGE_KEY) {
+        return;
+      }
+
+      const storedTheme = getStoredTheme();
+      if (storedTheme) {
+        setTheme(storedTheme);
+        return;
+      }
+
+      setTheme(getSystemTheme());
+    };
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleMediaChange);
+    } else {
+      mediaQuery.addListener(handleMediaChange);
+    }
+
+    window.addEventListener("storage", handleStorage);
+
+    markThemeReady();
+
+    return () => {
+      if (typeof mediaQuery.removeEventListener === "function") {
+        mediaQuery.removeEventListener("change", handleMediaChange);
+      } else {
+        mediaQuery.removeListener(handleMediaChange);
+      }
+
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
+
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const next = prev === "dark" ? "light" : "dark";
+
+      if (typeof window !== "undefined") {
+        const systemTheme = getSystemTheme();
+        persistTheme(next === systemTheme ? null : next);
+      }
+
+      return next;
+    });
+  };
+
+  const isDarkMode = isThemeReady ? theme === "dark" : false;
 
   const unavailableDates = useMemo(() => {
     return unavailableInput
@@ -574,7 +661,7 @@ export default function Kalender2026(): JSX.Element {
   const baseSectionProps = reduceMotion ? {} : motionConfig;
 
   return (
-    <div className={isDark ? "dark" : undefined}>
+    <div className={isDarkMode ? "dark" : undefined}>
       <motion.main
         className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100"
         initial={reduceMotion ? undefined : { opacity: 0 }}
@@ -601,11 +688,11 @@ export default function Kalender2026(): JSX.Element {
               </div>
               <button
                 type="button"
-                onClick={() => setIsDark((prev) => !prev)}
+                onClick={toggleTheme}
                 className="inline-flex h-11 items-center justify-center rounded-full border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:scale-[1.01] hover:border-slate-400 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-                aria-pressed={isDark}
-              >
-                {isDark ? "Mode Terang" : "Mode Gelap"}
+                aria-pressed={isDarkMode}
+                >
+                {isDarkMode ? "Mode Terang" : "Mode Gelap"}
               </button>
             </div>
             <div className="flex flex-wrap gap-3 text-sm text-slate-700 dark:text-slate-200">
