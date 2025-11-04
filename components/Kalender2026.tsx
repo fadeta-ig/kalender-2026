@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 
 type HolidayType = "libur" | "cuti-bersama";
 
@@ -498,12 +497,6 @@ const computeRecommendations = ({
     .slice(0, 6);
 };
 
-const motionConfig = {
-  initial: { opacity: 0, translateY: 24 },
-  whileInView: { opacity: 1, translateY: 0 },
-  transition: { duration: 0.3 },
-};
-
 const sectionTitleClass = "text-2xl font-semibold text-slate-800";
 const paragraphClass = "text-base text-slate-600";
 
@@ -512,7 +505,6 @@ export default function Kalender2026(): JSX.Element {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPreset, setSelectedPreset] = useState<string>(RECOMMENDATION_PRESETS[0].id);
   const [favorites, setFavorites] = useState<string[]>([]);
-  const reduceMotion = useReducedMotion();
 
   const activePreset = useMemo(() => {
     return RECOMMENDATION_PRESETS.find((preset) => preset.id === selectedPreset) ?? RECOMMENDATION_PRESETS[0];
@@ -586,18 +578,12 @@ export default function Kalender2026(): JSX.Element {
     });
   }, []);
 
-  const baseSectionProps = reduceMotion ? {} : motionConfig;
-
   return (
-    <motion.main
+    <main
       className="min-h-screen bg-gradient-to-br from-white via-sky-50/80 to-sky-200/70 text-slate-800"
-      initial={reduceMotion ? undefined : { opacity: 0 }}
-      animate={reduceMotion ? undefined : { opacity: 1 }}
-      transition={{ duration: 0.3 }}
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-12 sm:px-6 lg:px-8">
-        <motion.header
-          {...baseSectionProps}
+        <header
           className="flex flex-col gap-6 rounded-[32px] border border-white/60 bg-white/70 p-6 shadow-xl shadow-sky-200/50 backdrop-blur-2xl transition hover:-translate-y-1 hover:shadow-2xl"
         >
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -625,10 +611,9 @@ export default function Kalender2026(): JSX.Element {
               </span>
             ))}
           </div>
-        </motion.header>
+        </header>
 
-        <motion.section
-          {...baseSectionProps}
+        <section
           id="print-calendar"
           className="flex flex-col gap-6"
           aria-labelledby="kalender-utama-heading"
@@ -768,10 +753,9 @@ export default function Kalender2026(): JSX.Element {
               </article>
             ))}
           </div>
-        </motion.section>
+        </section>
 
-        <motion.section
-          {...baseSectionProps}
+        <section
           className="flex flex-col gap-6"
           aria-labelledby="jadwal-libur-heading"
         >
@@ -859,10 +843,9 @@ export default function Kalender2026(): JSX.Element {
               </article>
             ))}
           </div>
-        </motion.section>
+        </section>
 
-          <motion.section
-            {...baseSectionProps}
+        <section
             id="print-recommendations"
             className="flex flex-col gap-8"
             aria-labelledby="rekomendasi-heading"
@@ -996,16 +979,15 @@ export default function Kalender2026(): JSX.Element {
                 })
               )}
             </div>
-          </motion.section>
+        </section>
 
-        <motion.section
-          {...baseSectionProps}
+        <section
           className="rounded-3xl border border-white/60 bg-white/75 p-6 text-sm text-slate-600 shadow-lg shadow-sky-100/60 backdrop-blur-xl"
         >
           Data libur nasional dan cuti bersama diadaptasi dari Surat Keputusan Bersama Tiga Menteri tentang Hari Libur
           Nasional dan Cuti Bersama Tahun 2026.
-        </motion.section>
+        </section>
       </div>
-    </motion.main>
+    </main>
   );
 }
