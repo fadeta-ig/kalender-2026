@@ -66,6 +66,25 @@ const typeLabels: Record<HolidayType, string> = {
   "cuti-bersama": "Cuti Bersama",
 };
 
+// Calendar Grid Types
+type CalendarDay = {
+  date: Date;
+  day: number;
+  isCurrentMonth: boolean;
+  isWeekend: boolean;
+  isHoliday: boolean;
+  isCutiBersama: boolean;
+  holidayName?: string;
+  dateString: string;
+};
+
+type CalendarMonth = {
+  month: number;
+  year: number;
+  monthName: string;
+  days: CalendarDay[];
+};
+
 function buildSchedules(): MonthSchedule[] {
   const formatter = new Intl.DateTimeFormat("id-ID", { month: "long", year: "numeric" });
   const weekdayFormatter = new Intl.DateTimeFormat("id-ID", {
@@ -104,10 +123,102 @@ function buildSchedules(): MonthSchedule[] {
     }));
 }
 
+// Generate full calendar grid for each month
+function generateCalendarMonths(): CalendarMonth[] {
+  const year = 2026;
+  const months: CalendarMonth[] = [];
+  const allHolidays = [...HOLIDAYS_2026, ...JOINT_LEAVE_2026];
+  const monthFormatter = new Intl.DateTimeFormat("id-ID", { month: "long" });
+
+  for (let month = 0; month < 12; month++) {
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+
+    // Get the day of week for first day (0 = Sunday, 1 = Monday, etc.)
+    // In Indonesia, week starts on Monday, so we adjust
+    let startDayOfWeek = firstDay.getDay();
+    // Convert Sunday (0) to 7, so Monday becomes 1
+    startDayOfWeek = startDayOfWeek === 0 ? 7 : startDayOfWeek;
+
+    const days: CalendarDay[] = [];
+
+    // Add padding days from previous month
+    const prevMonthLastDay = new Date(year, month, 0);
+    const prevMonthDays = prevMonthLastDay.getDate();
+    for (let i = startDayOfWeek - 2; i >= 0; i--) {
+      const day = prevMonthDays - i;
+      const date = new Date(year, month - 1, day);
+      days.push({
+        date,
+        day,
+        isCurrentMonth: false,
+        isWeekend: date.getDay() === 0 || date.getDay() === 6,
+        isHoliday: false,
+        isCutiBersama: false,
+        dateString: formatDateString(date),
+      });
+    }
+
+    // Add current month days
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const dateString = formatDateString(date);
+      const holiday = allHolidays.find(h => h.date === dateString);
+
+      days.push({
+        date,
+        day,
+        isCurrentMonth: true,
+        isWeekend: date.getDay() === 0 || date.getDay() === 6,
+        isHoliday: holiday?.type === "libur" || false,
+        isCutiBersama: holiday?.type === "cuti-bersama" || false,
+        holidayName: holiday?.name,
+        dateString,
+      });
+    }
+
+    // Add padding days from next month
+    const remainingDays = 7 - (days.length % 7);
+    if (remainingDays < 7) {
+      for (let day = 1; day <= remainingDays; day++) {
+        const date = new Date(year, month + 1, day);
+        days.push({
+          date,
+          day,
+          isCurrentMonth: false,
+          isWeekend: date.getDay() === 0 || date.getDay() === 6,
+          isHoliday: false,
+          isCutiBersama: false,
+          dateString: formatDateString(date),
+        });
+      }
+    }
+
+    months.push({
+      month,
+      year,
+      monthName: monthFormatter.format(firstDay),
+      days,
+    });
+  }
+
+  return months;
+}
+
+function formatDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 const schedules = buildSchedules();
+const calendarMonths = generateCalendarMonths();
 
 export default function Kalender2026() {
   const [activeTab, setActiveTab] = useState<"calendar" | "recommendations">("recommendations");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const legend = useMemo(
     () => [
@@ -233,55 +344,187 @@ export default function Kalender2026() {
         {activeTab === "recommendations" ? (
           <LeaveRecommendations recommendations={recommendations} />
         ) : (
-          <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
-            {schedules.map((month, index) => (
-              <article
-                key={month.label}
-                className="glass rounded-3xl p-6 hover-lift animate-scale-in"
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
-                <h2 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
-                  <span className="flex h-2 w-2 rounded-full bg-sky-400"></span>
-                  {month.label}
-                </h2>
-                <p className="text-xs text-slate-400 mb-4">{month.entries.length} hari libur</p>
+          <>
+            {/* View Mode Toggle */}
+            <div className="flex justify-center mb-4">
+              <div className="glass-strong rounded-xl p-1.5 inline-flex gap-1">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`px-4 py-2 rounded-lg font-medium text-xs transition-all duration-300 ${
+                    viewMode === "grid"
+                      ? "bg-white/20 text-white shadow-sm"
+                      : "text-slate-300 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                    </svg>
+                    Grid
+                  </span>
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`px-4 py-2 rounded-lg font-medium text-xs transition-all duration-300 ${
+                    viewMode === "list"
+                      ? "bg-white/20 text-white shadow-sm"
+                      : "text-slate-300 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    List
+                  </span>
+                </button>
+              </div>
+            </div>
 
-                <ul className="space-y-3">
-                  {month.entries.map((entry, i) => (
-                    <li
-                      key={entry.key}
-                      className="glass-card rounded-2xl px-4 py-3.5 hover-lift transition-all duration-300 cursor-pointer animate-slide-up"
-                      style={{ animationDelay: `${(index * 0.05) + (i * 0.02)}s` }}
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                            {entry.weekday}
-                          </p>
-                          <p className="text-sm font-semibold text-slate-100 leading-snug">
-                            {entry.name}
-                          </p>
+            {/* Grid View - Full Calendar */}
+            {viewMode === "grid" ? (
+              <section className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {calendarMonths.map((monthData, index) => (
+                  <article
+                    key={monthData.month}
+                    className="glass rounded-3xl p-5 hover-lift animate-scale-in"
+                    style={{ animationDelay: `${index * 0.03}s` }}
+                  >
+                    <h2 className="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
+                      <span className="flex h-2 w-2 rounded-full bg-gradient-to-r from-sky-400 to-purple-500"></span>
+                      {monthData.monthName} {monthData.year}
+                    </h2>
+
+                    {/* Day headers */}
+                    <div className="grid grid-cols-7 gap-1 mb-2">
+                      {["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"].map((day) => (
+                        <div
+                          key={day}
+                          className="text-center text-xs font-semibold text-slate-400 py-1"
+                        >
+                          {day}
                         </div>
-                        <div className="flex flex-col items-end gap-2">
-                          <span className="text-3xl font-bold leading-none text-white tabular-nums">
-                            {entry.dayNumber}
-                          </span>
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${typeStyles[entry.type]}`}>
-                            <span
-                              className={`h-1.5 w-1.5 rounded-full ${
-                                entry.type === "libur" ? "bg-emerald-400" : "bg-sky-400"
-                              }`}
-                            />
-                            {entry.type === "libur" ? "Libur" : "Cuti"}
-                          </span>
-                        </div>
+                      ))}
+                    </div>
+
+                    {/* Calendar grid */}
+                    <div className="grid grid-cols-7 gap-1">
+                      {monthData.days.map((dayData, dayIndex) => {
+                        const isToday = dayData.dateString === new Date().toISOString().split('T')[0];
+
+                        return (
+                          <div
+                            key={dayIndex}
+                            className={`
+                              relative aspect-square rounded-lg p-1 text-center text-xs font-medium
+                              transition-all duration-300 cursor-pointer group
+                              ${!dayData.isCurrentMonth ? "text-slate-600" : "text-slate-200"}
+                              ${dayData.isWeekend && dayData.isCurrentMonth ? "bg-white/5" : ""}
+                              ${dayData.isHoliday ? "bg-gradient-to-br from-emerald-500/30 to-emerald-600/20 ring-1 ring-emerald-400/30" : ""}
+                              ${dayData.isCutiBersama ? "bg-gradient-to-br from-sky-500/30 to-sky-600/20 ring-1 ring-sky-400/30" : ""}
+                              ${isToday ? "ring-2 ring-yellow-400 shadow-lg shadow-yellow-400/20" : ""}
+                              ${dayData.isCurrentMonth && !dayData.isHoliday && !dayData.isCutiBersama ? "hover:bg-white/10 hover:scale-110" : ""}
+                            `}
+                            title={dayData.holidayName || ""}
+                          >
+                            <div className="flex items-center justify-center h-full">
+                              <span className={`${isToday ? "text-yellow-400 font-bold" : ""}`}>
+                                {dayData.day}
+                              </span>
+                            </div>
+
+                            {/* Tooltip for holiday name */}
+                            {dayData.holidayName && (
+                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10 shadow-xl">
+                                {dayData.holidayName}
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900"></div>
+                              </div>
+                            )}
+
+                            {/* Indicator dots for holidays */}
+                            {(dayData.isHoliday || dayData.isCutiBersama) && (
+                              <div className="absolute bottom-0.5 left-1/2 -translate-x-1/2">
+                                <span className={`block w-1 h-1 rounded-full ${
+                                  dayData.isHoliday ? "bg-emerald-400" : "bg-sky-400"
+                                }`}></span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Month stats */}
+                    <div className="mt-4 pt-3 border-t border-white/10 flex justify-center gap-3 text-xs">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span className="text-slate-400">
+                          {monthData.days.filter(d => d.isHoliday && d.isCurrentMonth).length} Libur
+                        </span>
                       </div>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </section>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-sky-400"></span>
+                        <span className="text-slate-400">
+                          {monthData.days.filter(d => d.isCutiBersama && d.isCurrentMonth).length} Cuti
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </section>
+            ) : (
+              /* List View - Original Schedule View */
+              <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+                {schedules.map((month, index) => (
+                  <article
+                    key={month.label}
+                    className="glass rounded-3xl p-6 hover-lift animate-scale-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <h2 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
+                      <span className="flex h-2 w-2 rounded-full bg-sky-400"></span>
+                      {month.label}
+                    </h2>
+                    <p className="text-xs text-slate-400 mb-4">{month.entries.length} hari libur</p>
+
+                    <ul className="space-y-3">
+                      {month.entries.map((entry, i) => (
+                        <li
+                          key={entry.key}
+                          className="glass-card rounded-2xl px-4 py-3.5 hover-lift transition-all duration-300 cursor-pointer animate-slide-up"
+                          style={{ animationDelay: `${(index * 0.05) + (i * 0.02)}s` }}
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                                {entry.weekday}
+                              </p>
+                              <p className="text-sm font-semibold text-slate-100 leading-snug">
+                                {entry.name}
+                              </p>
+                            </div>
+                            <div className="flex flex-col items-end gap-2">
+                              <span className="text-3xl font-bold leading-none text-white tabular-nums">
+                                {entry.dayNumber}
+                              </span>
+                              <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${typeStyles[entry.type]}`}>
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full ${
+                                    entry.type === "libur" ? "bg-emerald-400" : "bg-sky-400"
+                                  }`}
+                                />
+                                {entry.type === "libur" ? "Libur" : "Cuti"}
+                              </span>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                ))}
+              </section>
+            )}
+          </>
         )}
 
         {/* Footer */}
