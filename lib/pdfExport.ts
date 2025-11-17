@@ -62,6 +62,9 @@ const COLORS = {
   borderDark: { r: 203, g: 213, b: 225 }, // slate-300
   shadow: { r: 15, g: 23, b: 42, a: 0.1 },
   highlight: { r: 255, g: 255, b: 255, a: 0.8 },
+
+  // Sunday text color - red
+  sundayText: { r: 220, g: 38, b: 38 }, // red-600 for high contrast
 };
 
 // Helper: Draw 3D glass morphism card with depth
@@ -372,10 +375,17 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
     const dayHeaders = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(COLORS.textDark.r, COLORS.textDark.g, COLORS.textDark.b);
 
     dayHeaders.forEach((day, i) => {
       const x = MARGIN + calendarCardPadding + i * cellWidth;
+
+      // Sunday header in red
+      if (i === 6) {
+        doc.setTextColor(COLORS.sundayText.r, COLORS.sundayText.g, COLORS.sundayText.b);
+      } else {
+        doc.setTextColor(COLORS.textDark.r, COLORS.textDark.g, COLORS.textDark.b);
+      }
+
       doc.text(day, x + cellWidth / 2, calendarStartY + 4, { align: 'center' });
     });
 
@@ -462,6 +472,11 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
         doc.setTextColor(textColor.r, textColor.g, textColor.b);
       } else if (dayData.isCutiBersama) {
         textColor = COLORS.cutiaText;
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(textColor.r, textColor.g, textColor.b);
+      } else if (dayData.date.getDay() === 0) {
+        // Sunday - red color
+        textColor = COLORS.sundayText;
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(textColor.r, textColor.g, textColor.b);
       } else {
