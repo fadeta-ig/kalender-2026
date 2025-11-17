@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import LeaveRecommendations from "./LeaveRecommendations";
 import { analyzeLeaveOpportunities, getQuickInsights } from "@/lib/leaveRecommendation";
+import { exportCalendarToPDF } from "@/lib/pdfExport";
 
 type HolidayType = "libur" | "cuti-bersama";
 
@@ -220,6 +221,10 @@ export default function Kalender2026() {
   const [activeTab, setActiveTab] = useState<"calendar" | "recommendations">("recommendations");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
+  const handleExportPDF = () => {
+    exportCalendarToPDF(HOLIDAYS_2026, JOINT_LEAVE_2026);
+  };
+
   const legend = useMemo(
     () => [
       { type: "libur" as const, label: typeLabels.libur },
@@ -345,8 +350,22 @@ export default function Kalender2026() {
           <LeaveRecommendations recommendations={recommendations} />
         ) : (
           <>
-            {/* View Mode Toggle */}
-            <div className="flex justify-center mb-4">
+            {/* Export PDF and View Mode Toggle */}
+            <div className="flex justify-center items-center gap-4 mb-4">
+              {/* Export PDF Button */}
+              <button
+                onClick={handleExportPDF}
+                className="glass-strong rounded-xl px-6 py-3 font-semibold text-sm transition-all duration-300 hover:bg-white/10 hover-lift group"
+              >
+                <span className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span className="text-white">Export PDF</span>
+                </span>
+              </button>
+
+              {/* View Mode Toggle */}
               <div className="glass-strong rounded-xl p-1.5 inline-flex gap-1">
                 <button
                   onClick={() => setViewMode("grid")}
