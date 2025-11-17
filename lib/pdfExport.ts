@@ -81,19 +81,19 @@ function drawGlassCard(
 
   // Shadow layer (bottom) for 3D depth
   doc.setFillColor(COLORS.shadow.r, COLORS.shadow.g, COLORS.shadow.b);
-  doc.setGState(new doc.GState({ opacity: COLORS.shadow.a || 0.1 }));
+  doc.setGState({ opacity: COLORS.shadow.a || 0.1 });
   doc.roundedRect(x + shadowDepth, y + shadowDepth, width, height, 3, 3, 'F');
 
   // Outer glow if specified
   if (glowColor) {
     doc.setFillColor(glowColor.r, glowColor.g, glowColor.b);
-    doc.setGState(new doc.GState({ opacity: glowColor.a || 0.3 }));
+    doc.setGState({ opacity: glowColor.a || 0.3 });
     doc.roundedRect(x - 1, y - 1, width + 2, height + 2, 3.5, 3.5, 'F');
   }
 
   // Main glass layer (semi-transparent white)
   doc.setFillColor(COLORS.glassLight.r, COLORS.glassLight.g, COLORS.glassLight.b);
-  doc.setGState(new doc.GState({ opacity: COLORS.glassLight.a || 0.95 }));
+  doc.setGState({ opacity: COLORS.glassLight.a || 0.95 });
   doc.roundedRect(x, y, width, height, 3, 3, 'F');
 
   // Gradient overlay for depth (top to bottom)
@@ -104,7 +104,7 @@ function drawGlassCard(
     const opacity = 0.08 - (i / gradientSteps) * 0.05;
 
     doc.setFillColor(COLORS.gradientTop.r, COLORS.gradientTop.g, COLORS.gradientTop.b);
-    doc.setGState(new doc.GState({ opacity }));
+    doc.setGState({ opacity });
 
     if (i === 0) {
       doc.rect(x, stepY, width, stepHeight, 'F');
@@ -117,30 +117,30 @@ function drawGlassCard(
 
   // Glass highlight (top-left to simulate light reflection)
   doc.setFillColor(COLORS.highlight.r, COLORS.highlight.g, COLORS.highlight.b);
-  doc.setGState(new doc.GState({ opacity: COLORS.highlight.a || 0.8 }));
+  doc.setGState({ opacity: COLORS.highlight.a || 0.8 });
   doc.roundedRect(x, y, width, height * 0.4, 3, 3, 'F');
 
   // Blur simulation with multiple semi-transparent layers
   for (let i = 0; i < 3; i++) {
     doc.setFillColor(255, 255, 255);
-    doc.setGState(new doc.GState({ opacity: 0.15 - i * 0.05 }));
+    doc.setGState({ opacity: 0.15 - i * 0.05 });
     doc.roundedRect(x + i * 0.3, y + i * 0.3, width - i * 0.6, height - i * 0.6, 3 - i * 0.5, 3 - i * 0.5, 'F');
   }
 
   // Glass border (white highlight)
-  doc.setGState(new doc.GState({ opacity: COLORS.borderGlass.a || 0.6 }));
+  doc.setGState({ opacity: COLORS.borderGlass.a || 0.6 });
   doc.setDrawColor(COLORS.borderGlass.r, COLORS.borderGlass.g, COLORS.borderGlass.b);
   doc.setLineWidth(borderThickness * 1.5);
   doc.roundedRect(x, y, width, height, 3, 3, 'S');
 
   // Inner border (darker) for definition
-  doc.setGState(new doc.GState({ opacity: 1 }));
+  doc.setGState({ opacity: 1 });
   doc.setDrawColor(COLORS.borderDark.r, COLORS.borderDark.g, COLORS.borderDark.b);
   doc.setLineWidth(borderThickness);
   doc.roundedRect(x + 0.5, y + 0.5, width - 1, height - 1, 2.5, 2.5, 'S');
 
   // Reset opacity
-  doc.setGState(new doc.GState({ opacity: 1 }));
+  doc.setGState({ opacity: 1 });
 }
 
 // Helper: Draw frosted glass background
@@ -158,13 +158,13 @@ function drawFrostedBackground(doc: jsPDF) {
     const b = Math.round(COLORS.gradientTop.b + (COLORS.gradientBottom.b - COLORS.gradientTop.b) * ratio);
 
     doc.setFillColor(r, g, b);
-    doc.setGState(new doc.GState({ opacity: 0.12 }));
+    doc.setGState({ opacity: 0.12 });
     doc.rect(0, y, PAGE_WIDTH, heightStep, 'F');
   }
 
   // Frosted glass texture layers
   doc.setFillColor(255, 255, 255);
-  doc.setGState(new doc.GState({ opacity: 0.7 }));
+  doc.setGState({ opacity: 0.7 });
   doc.rect(0, 0, PAGE_WIDTH, PAGE_HEIGHT, 'F');
 
   // Decorative glass orbs with blur
@@ -181,13 +181,13 @@ function drawFrostedBackground(doc: jsPDF) {
       const opacity = (orb.color.a || 0.15) * (1 - i * 0.15);
 
       doc.setFillColor(orb.color.r, orb.color.g, orb.color.b);
-      doc.setGState(new doc.GState({ opacity }));
+      doc.setGState({ opacity });
       doc.circle(orb.x, orb.y, radius, 'F');
     }
   });
 
   // Reset opacity
-  doc.setGState(new doc.GState({ opacity: 1 }));
+  doc.setGState({ opacity: 1 });
 }
 
 function formatDateString(date: Date): string {
@@ -361,33 +361,33 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
         if (dayData.isHoliday) {
           // Holiday glass card with glow
           doc.setFillColor(COLORS.holidayBg.r, COLORS.holidayBg.g, COLORS.holidayBg.b);
-          doc.setGState(new doc.GState({ opacity: COLORS.holidayBg.a }));
+          doc.setGState({ opacity: COLORS.holidayBg.a });
           doc.roundedRect(x + 0.5, y + 0.5, cellWidth - 1, cellHeight - 1, 1.5, 1.5, 'F');
 
           // Glow effect
           doc.setFillColor(COLORS.holidayGlow.r, COLORS.holidayGlow.g, COLORS.holidayGlow.b);
-          doc.setGState(new doc.GState({ opacity: COLORS.holidayGlow.a }));
+          doc.setGState({ opacity: COLORS.holidayGlow.a });
           doc.roundedRect(x, y, cellWidth, cellHeight, 2, 2, 'F');
 
-          doc.setGState(new doc.GState({ opacity: 1 }));
+          doc.setGState({ opacity: 1 });
         } else if (dayData.isCutiBersama) {
           // Cuti glass card with glow
           doc.setFillColor(COLORS.cutiaBg.r, COLORS.cutiaBg.g, COLORS.cutiaBg.b);
-          doc.setGState(new doc.GState({ opacity: COLORS.cutiaBg.a }));
+          doc.setGState({ opacity: COLORS.cutiaBg.a });
           doc.roundedRect(x + 0.5, y + 0.5, cellWidth - 1, cellHeight - 1, 1.5, 1.5, 'F');
 
           // Glow effect
           doc.setFillColor(COLORS.cutiaGlow.r, COLORS.cutiaGlow.g, COLORS.cutiaGlow.b);
-          doc.setGState(new doc.GState({ opacity: COLORS.cutiaGlow.a }));
+          doc.setGState({ opacity: COLORS.cutiaGlow.a });
           doc.roundedRect(x, y, cellWidth, cellHeight, 2, 2, 'F');
 
-          doc.setGState(new doc.GState({ opacity: 1 }));
+          doc.setGState({ opacity: 1 });
         } else if (dayData.isWeekend) {
           // Weekend subtle background
           doc.setFillColor(COLORS.glassDark.r, COLORS.glassDark.g, COLORS.glassDark.b);
-          doc.setGState(new doc.GState({ opacity: 0.4 }));
+          doc.setGState({ opacity: 0.4 });
           doc.roundedRect(x + 0.5, y + 0.5, cellWidth - 1, cellHeight - 1, 1, 1, 'F');
-          doc.setGState(new doc.GState({ opacity: 1 }));
+          doc.setGState({ opacity: 1 });
         }
       }
 
@@ -403,7 +403,7 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
       if (!dayData.isCurrentMonth) {
         textColor = COLORS.textMedium;
         doc.setFont('helvetica', 'normal');
-        doc.setGState(new doc.GState({ opacity: 0.4 }));
+        doc.setGState({ opacity: 0.4 });
       } else if (dayData.isHoliday) {
         textColor = COLORS.holidayText;
         doc.setFont('helvetica', 'bold');
@@ -418,7 +418,7 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
       doc.text(String(dayData.day), x + cellWidth / 2, y + cellHeight / 2 + 1.5, { align: 'center' });
 
       if (!dayData.isCurrentMonth) {
-        doc.setGState(new doc.GState({ opacity: 1 }));
+        doc.setGState({ opacity: 1 });
       }
 
       // Indicator dot for holidays with enhanced glow
@@ -427,11 +427,11 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
 
         // Glow around dot
         doc.setFillColor(dotColor.r, dotColor.g, dotColor.b);
-        doc.setGState(new doc.GState({ opacity: 0.3 }));
+        doc.setGState({ opacity: 0.3 });
         doc.circle(x + cellWidth / 2, y + cellHeight - 2, 1.2, 'F');
 
         // Main dot
-        doc.setGState(new doc.GState({ opacity: 1 }));
+        doc.setGState({ opacity: 1 });
         doc.setFillColor(dotColor.r, dotColor.g, dotColor.b);
         doc.circle(x + cellWidth / 2, y + cellHeight - 2, 0.9, 'F');
       }
@@ -468,18 +468,18 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
 
     // Libur legend with glass effect
     doc.setFillColor(COLORS.holidayText.r, COLORS.holidayText.g, COLORS.holidayText.b);
-    doc.setGState(new doc.GState({ opacity: 0.3 }));
+    doc.setGState({ opacity: 0.3 });
     doc.circle(listStartX + listCardPadding, calendarStartY + 8, 1.5, 'F');
-    doc.setGState(new doc.GState({ opacity: 1 }));
+    doc.setGState({ opacity: 1 });
     doc.setFillColor(COLORS.holidayText.r, COLORS.holidayText.g, COLORS.holidayText.b);
     doc.circle(listStartX + listCardPadding, calendarStartY + 8, 1, 'F');
     doc.text('Libur Nasional', listStartX + listCardPadding + 3.5, calendarStartY + 9);
 
     // Cuti legend with glass effect
     doc.setFillColor(COLORS.cutiaText.r, COLORS.cutiaText.g, COLORS.cutiaText.b);
-    doc.setGState(new doc.GState({ opacity: 0.3 }));
+    doc.setGState({ opacity: 0.3 });
     doc.circle(listStartX + listCardPadding + 28, calendarStartY + 8, 1.5, 'F');
-    doc.setGState(new doc.GState({ opacity: 1 }));
+    doc.setGState({ opacity: 1 });
     doc.setFillColor(COLORS.cutiaText.r, COLORS.cutiaText.g, COLORS.cutiaText.b);
     doc.circle(listStartX + listCardPadding + 28, calendarStartY + 8, 1, 'F');
     doc.text('Cuti Bersama', listStartX + listCardPadding + 31.5, calendarStartY + 9);
@@ -566,12 +566,12 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
 
     // Glass divider line
     doc.setDrawColor(COLORS.borderGlass.r, COLORS.borderGlass.g, COLORS.borderGlass.b);
-    doc.setGState(new doc.GState({ opacity: COLORS.borderGlass.a }));
+    doc.setGState({ opacity: COLORS.borderGlass.a });
     doc.setLineWidth(0.5);
     doc.line(MARGIN, footerY - 5, PAGE_WIDTH - MARGIN, footerY - 5);
 
     // Darker line for definition
-    doc.setGState(new doc.GState({ opacity: 1 }));
+    doc.setGState({ opacity: 1 });
     doc.setDrawColor(COLORS.borderDark.r, COLORS.borderDark.g, COLORS.borderDark.b);
     doc.setLineWidth(0.3);
     doc.line(MARGIN, footerY - 4.7, PAGE_WIDTH - MARGIN, footerY - 4.7);
