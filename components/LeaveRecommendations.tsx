@@ -5,9 +5,13 @@ import type { LeaveRecommendation } from "@/lib/leaveRecommendation";
 
 type Props = {
   recommendations: LeaveRecommendation[];
+  onShareRecommendation?: (rec: LeaveRecommendation) => void;
 };
 
-export default function LeaveRecommendations({ recommendations }: Props) {
+export default function LeaveRecommendations({
+  recommendations,
+  onShareRecommendation,
+}: Props) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const topRecommendations = useMemo(() => {
@@ -128,16 +132,16 @@ export default function LeaveRecommendations({ recommendations }: Props) {
                 </div>
               </div>
 
-              {/* Toggle Detail Button */}
-              <div className="border-t border-zinc-100 dark:border-zinc-800/80 pt-3">
+              {/* Action Buttons: Toggle Detail & Share */}
+              <div className="border-t border-zinc-100 dark:border-zinc-800/80 pt-3 flex items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => setExpandedId(isExpanded ? null : rec.id)}
-                  className="w-full flex items-center justify-between text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                  className="flex items-center gap-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 >
-                  <span>{isExpanded ? "Sembunyikan Rincian Tanggal" : "Lihat Rincian Tanggal"}</span>
+                  <span>{isExpanded ? "Tutup Rincian" : "Lihat Rincian Tanggal"}</span>
                   <svg
-                    className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                    className={`w-4 h-4 pointer-events-none transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -146,6 +150,21 @@ export default function LeaveRecommendations({ recommendations }: Props) {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                   </svg>
                 </button>
+
+                {onShareRecommendation && (
+                  <button
+                    type="button"
+                    onClick={() => onShareRecommendation(rec)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200/60 dark:border-emerald-800/60 transition-colors"
+                    title="Bagikan paket libur ini ke teman / WhatsApp"
+                  >
+                    <svg className="w-3.5 h-3.5 pointer-events-none text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                    </svg>
+                    <span>Bagikan</span>
+                  </button>
+                )}
+              </div>
 
                 {/* Expanded Details List */}
                 {isExpanded && (
@@ -190,7 +209,6 @@ export default function LeaveRecommendations({ recommendations }: Props) {
                     })}
                   </div>
                 )}
-              </div>
             </article>
           );
         })}

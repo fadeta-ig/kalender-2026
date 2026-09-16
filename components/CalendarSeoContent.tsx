@@ -401,7 +401,7 @@ export default function CalendarSeoContent() {
                 >
                   <span>{faq.q}</span>
                   <svg
-                    className={`w-4 h-4 text-zinc-500 transition-transform duration-200 shrink-0 ${
+                    className={`w-4 h-4 pointer-events-none text-zinc-500 transition-transform duration-200 shrink-0 ${
                       isOpen ? "rotate-180" : ""
                     }`}
                     fill="none"

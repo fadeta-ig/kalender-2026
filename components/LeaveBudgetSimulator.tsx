@@ -10,6 +10,7 @@ type LeaveBudgetSimulatorProps = {
   onUpdateQuota: (quota: number) => void;
   onUpdateStrategy: (strategy: LeaveStrategy) => void;
   onToggleHighlightCalendar: () => void;
+  onSharePlan?: () => void;
 };
 
 const PRESETS = [3, 5, 8, 12];
@@ -22,6 +23,7 @@ export default function LeaveBudgetSimulator({
   onUpdateQuota,
   onUpdateStrategy,
   onToggleHighlightCalendar,
+  onSharePlan,
 }: LeaveBudgetSimulatorProps) {
   const formatDateRange = (startDate: string, endDate: string): string => {
     const start = new Date(startDate);
@@ -198,24 +200,40 @@ export default function LeaveBudgetSimulator({
           Paket Liburan yang Terpilih ({plan.selectedPackages.length} Periode)
         </h3>
 
-        <button
-          type="button"
-          onClick={onToggleHighlightCalendar}
-          className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors flex items-center gap-2 ${
-            isCalendarHighlighted
-              ? "border-amber-500 bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/80"
-              : "border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
-          }`}
-        >
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>
-            {isCalendarHighlighted
-              ? "Hilangkan Tanda di Kalender"
-              : "Tandai Cuti Ini di Kalender"}
-          </span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {onSharePlan && (
+            <button
+              type="button"
+              onClick={onSharePlan}
+              className="px-3 py-1.5 rounded-lg border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
+              title="Bagikan rencana libur ini ke WhatsApp atau teman"
+            >
+              <svg className="w-3.5 h-3.5 pointer-events-none text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+              </svg>
+              <span>Bagikan Rencana</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={onToggleHighlightCalendar}
+            className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors flex items-center gap-2 ${
+              isCalendarHighlighted
+                ? "border-amber-500 bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/80"
+                : "border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+            }`}
+          >
+            <svg className="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>
+              {isCalendarHighlighted
+                ? "Hilangkan Tanda di Kalender"
+                : "Tandai Cuti Ini di Kalender"}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Packages Detail Listing */}

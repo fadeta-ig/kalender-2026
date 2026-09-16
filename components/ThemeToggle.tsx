@@ -50,7 +50,7 @@ export default function ThemeToggle() {
     >
       {theme === "light" ? (
         // Moon Icon (Clean SVG)
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+        <svg className="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -59,7 +59,7 @@ export default function ThemeToggle() {
         </svg>
       ) : (
         // Sun Icon (Clean SVG)
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+        <svg className="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
