@@ -102,7 +102,7 @@ export function analyzeLeaveOpportunities(
 ): LeaveRecommendation[] {
   const allHolidays = [...holidays, ...jointLeave];
   const recommendations: LeaveRecommendation[] = [];
-  const year = 2026;
+  const year = allHolidays.length > 0 ? new Date(allHolidays[0].date).getFullYear() : 2026;
 
   // Sort holidays by date
   const sortedHolidays = [...allHolidays].sort((a, b) =>
@@ -110,7 +110,7 @@ export function analyzeLeaveOpportunities(
   );
 
   // Strategy 1: Analyze individual holidays and nearby opportunities
-  sortedHolidays.forEach((holiday, index) => {
+  sortedHolidays.forEach((holiday) => {
     const holidayDate = new Date(holiday.date);
 
     // Skip if holiday is on weekend (already off)
@@ -121,13 +121,13 @@ export function analyzeLeaveOpportunities(
       // Check forward bridge
       const nextDate = addDays(holidayDate, gapDays + 1);
       if (nextDate.getFullYear() === year) {
-        analyzeBridge(holidayDate, nextDate, allHolidays, recommendations, "forward");
+        analyzeBridge(holidayDate, nextDate, allHolidays, recommendations);
       }
 
       // Check backward bridge
       const prevDate = addDays(holidayDate, -(gapDays + 1));
       if (prevDate.getFullYear() === year) {
-        analyzeBridge(prevDate, holidayDate, allHolidays, recommendations, "backward");
+        analyzeBridge(prevDate, holidayDate, allHolidays, recommendations);
       }
     }
   });
@@ -168,8 +168,7 @@ function analyzeBridge(
   startDate: Date,
   endDate: Date,
   holidays: Holiday[],
-  recommendations: LeaveRecommendation[],
-  direction: "forward" | "backward"
+  recommendations: LeaveRecommendation[]
 ): void {
   // Extend to include weekends
   let actualStart = new Date(startDate);

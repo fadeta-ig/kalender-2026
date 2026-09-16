@@ -8,7 +8,6 @@ type Props = {
 };
 
 export default function LeaveRecommendations({ recommendations }: Props) {
-  const [selectedRec, setSelectedRec] = useState<LeaveRecommendation | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const topRecommendations = useMemo(() => {
@@ -80,7 +79,7 @@ export default function LeaveRecommendations({ recommendations }: Props) {
             key={rec.id}
             className="glass-strong rounded-2xl p-6 hover-lift cursor-pointer animate-scale-in"
             style={{ animationDelay: `${index * 0.1}s` }}
-            onClick={() => setSelectedRec(rec)}
+            onClick={() => setExpandedId(expandedId === rec.id ? null : rec.id)}
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -187,7 +186,7 @@ export default function LeaveRecommendations({ recommendations }: Props) {
                     </p>
 
                     <div className="space-y-1.5 max-h-48 overflow-y-auto">
-                      {rec.dates.map((date, i) => {
+                      {rec.dates.map((date) => {
                         const dayDate = new Date(date.date);
                         const dayFormatter = new Intl.DateTimeFormat("id-ID", {
                           day: "numeric",

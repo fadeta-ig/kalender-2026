@@ -1,0 +1,45 @@
+import type { YearHolidayData } from "./types";
+
+export const HOLIDAYS_2027: YearHolidayData = {
+  year: 2027,
+  skbInfo: {
+    decreeNumber: "SKB No. 1205/2026, No. 3/2026, No. 2/2026",
+    signedDate: "15 September 2026",
+    signatories: [
+      "Menteri Agama (Nasaruddin Umar)",
+      "Menteri Ketenagakerjaan (Yassierli)",
+      "Menteri PANRB (Rini Widyantini)",
+    ],
+    description: "Surat Keputusan Bersama (SKB) 3 Menteri tentang Hari Libur Nasional dan Cuti Bersama Tahun 2027",
+  },
+  holidays: [
+    { date: "2027-01-01", name: "Tahun Baru 2027 Masehi", type: "libur" },
+    { date: "2027-01-05", name: "Isra Mikraj Nabi Muhammad SAW 1448 H", type: "libur" },
+    { date: "2027-02-06", name: "Tahun Baru Imlek 2578 Kongzili", type: "libur" },
+    { date: "2027-03-08", name: "Hari Suci Nyepi (Tahun Baru Saka 1949)", type: "libur" },
+    { date: "2027-03-10", name: "Idulfitri 1448 H (Hari 1)", type: "libur" },
+    { date: "2027-03-11", name: "Idulfitri 1448 H (Hari 2)", type: "libur" },
+    { date: "2027-03-26", name: "Wafat Yesus Kristus", type: "libur" },
+    { date: "2027-03-28", name: "Kebangkitan Yesus Kristus (Paskah)", type: "libur" },
+    { date: "2027-05-01", name: "Hari Buruh Internasional", type: "libur" },
+    { date: "2027-05-06", name: "Kenaikan Yesus Kristus", type: "libur" },
+    { date: "2027-05-17", name: "Iduladha 1448 H", type: "libur" },
+    { date: "2027-05-20", name: "Hari Raya Waisak 2571 BE", type: "libur" },
+    { date: "2027-06-01", name: "Hari Lahir Pancasila", type: "libur" },
+    { date: "2027-06-06", name: "1 Muharam Tahun Baru Islam 1449 H", type: "libur" },
+    { date: "2027-08-15", name: "Maulid Nabi Muhammad SAW 1449 H", type: "libur" },
+    { date: "2027-08-17", name: "Proklamasi Kemerdekaan RI", type: "libur" },
+    { date: "2027-12-25", name: "Kelahiran Yesus Kristus (Natal)", type: "libur" },
+    { date: "2027-12-26", name: "Isra Mikraj Nabi Muhammad SAW 1449 H", type: "libur" },
+  ],
+  jointLeave: [
+    { date: "2027-02-05", name: "Cuti Bersama Tahun Baru Imlek 2578 Kongzili", type: "cuti-bersama" },
+    { date: "2027-03-09", name: "Cuti Bersama Idulfitri 1448 H", type: "cuti-bersama" },
+    { date: "2027-03-12", name: "Cuti Bersama Idulfitri 1448 H", type: "cuti-bersama" },
+    { date: "2027-03-15", name: "Cuti Bersama Idulfitri 1448 H", type: "cuti-bersama" },
+    { date: "2027-03-25", name: "Cuti Bersama Wafat Yesus Kristus", type: "cuti-bersama" },
+    { date: "2027-05-18", name: "Cuti Bersama Iduladha 1448 H", type: "cuti-bersama" },
+    { date: "2027-05-19", name: "Cuti Bersama Hari Raya Waisak 2571 BE", type: "cuti-bersama" },
+    { date: "2027-12-24", name: "Cuti Bersama Kelahiran Yesus Kristus (Natal)", type: "cuti-bersama" },
+  ],
+};

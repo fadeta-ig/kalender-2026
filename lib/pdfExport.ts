@@ -232,8 +232,7 @@ function formatDateString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-function generateCalendarMonths(holidays: Holiday[], jointLeave: Holiday[]): CalendarMonth[] {
-  const year = 2026;
+function generateCalendarMonths(holidays: Holiday[], jointLeave: Holiday[], year: number = 2026): CalendarMonth[] {
   const months: CalendarMonth[] = [];
   const allHolidays = [...holidays, ...jointLeave];
   const monthFormatter = new Intl.DateTimeFormat("id-ID", { month: "long" });
@@ -311,7 +310,7 @@ function generateCalendarMonths(holidays: Holiday[], jointLeave: Holiday[]): Cal
   return months;
 }
 
-export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) {
+export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[], year: number = 2026) {
   // Create PDF with B5 landscape orientation
   const doc = new jsPDF({
     orientation: 'landscape',
@@ -319,7 +318,7 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
     format: [PAGE_HEIGHT, PAGE_WIDTH]
   });
 
-  const calendarMonths = generateCalendarMonths(holidays, jointLeave);
+  const calendarMonths = generateCalendarMonths(holidays, jointLeave, year);
   const allHolidays = [...holidays, ...jointLeave];
 
   calendarMonths.forEach((monthData, index) => {
@@ -561,7 +560,7 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
     // Get holidays for this month
     const monthHolidays = allHolidays.filter(h => {
       const holidayDate = new Date(h.date);
-      return holidayDate.getMonth() === monthData.month && holidayDate.getFullYear() === 2026;
+      return holidayDate.getMonth() === monthData.month && holidayDate.getFullYear() === year;
     }).sort((a, b) => a.date.localeCompare(b.date));
 
     // Holiday list
@@ -657,10 +656,10 @@ export function exportCalendarToPDF(holidays: Holiday[], jointLeave: Holiday[]) 
     doc.setFontSize(7);
     doc.setTextColor(COLORS.textMedium.r, COLORS.textMedium.g, COLORS.textMedium.b);
     doc.setFont('helvetica', 'bold');
-    doc.text('Kalender 2026 Indonesia - Libur Nasional & Cuti Bersama', MARGIN, footerY);
+    doc.text(`Kalender ${year} Indonesia - Libur Nasional & Cuti Bersama`, MARGIN, footerY);
     doc.text(`Halaman ${index + 1} dari 12`, PAGE_WIDTH - MARGIN, footerY, { align: 'right' });
   });
 
   // Save the PDF
-  doc.save('Kalender-2026-Indonesia.pdf');
+  doc.save(`Kalender-${year}-Indonesia.pdf`);
 }

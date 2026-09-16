@@ -5,8 +5,9 @@ import "./globals.css";
 import "@fontsource-variable/inter";
 
 export const metadata: Metadata = {
-  title: "Kalender 2026 Indonesia",
-  description: "Kalender 2026 dengan AI rekomendasi cuti panjang",
+  title: "Kalender Resmi Indonesia 2026 - 2027 | SKB 3 Menteri",
+  description:
+    "Daftar resmi libur nasional dan cuti bersama 2026 - 2027 sesuai SKB 3 Menteri Republik Indonesia dilengkapi AI rekomendasi cuti optimal dan ekspor PDF.",
 };
 
 export default function RootLayout({
