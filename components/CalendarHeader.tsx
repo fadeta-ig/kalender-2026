@@ -35,7 +35,7 @@ export default function CalendarHeader({
           Kalender {year} Indonesia
         </h1>
         <p className="text-sm sm:text-base text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto font-normal leading-relaxed">
-          Daftar resmi hari libur nasional dan cuti bersama pemerintah, dilengkapi panduan cerdas untuk merencanakan cuti tahunan dengan lebih hemat.
+          Jadwal resmi hari libur nasional dan cuti bersama SKB 3 Menteri, simulasi rekomendasi cuti hemat, serta penanggalan budaya Kalender Jawa (weton &amp; pasaran) dan Hijriah.
         </p>
       </div>
 

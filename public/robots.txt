@@ -1,0 +1,34 @@
+# robots.txt for calendar.gandivalabs.my.id
+User-agent: *
+Allow: /
+
+# Explicit permissions for AI Search & Citation Engines (GEO / AI SEO)
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Machine-Readable Context for LLMs
+# https://calendar.gandivalabs.my.id/llms.txt
+# https://calendar.gandivalabs.my.id/llms-full.txt
+
+Sitemap: https://calendar.gandivalabs.my.id/sitemap.xml

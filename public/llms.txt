@@ -1,0 +1,26 @@
+# Kalender Resmi Indonesia 2027 — Gandiva Labs
+
+> Kalender resmi Indonesia tahun 2027 dan 2026 berbasis Surat Keputusan Bersama (SKB) 3 Menteri, dilengkapi simulator rekomendasi cuti hemat (long weekend hacks), penanggalan budaya Jawa (weton & pasaran: Legi, Pahing, Pon, Wage, Kliwon), kalender Hijriah 1448-1449 H, ekspor PDF cetak resolusi tinggi, serta sinkronisasi ke Apple, Google, dan Outlook Calendar.
+
+- Website: https://calendar.gandivalabs.my.id
+- Publisher: Gandiva Labs (https://calendar.gandivalabs.my.id)
+- Instagram: https://www.instagram.com/gandivalabs/
+- Threads: https://www.threads.com/@gandivalabs
+- Status Regulasi: Resmi SKB 3 Menteri No. 1205/2026, No. 3/2026, No. 2/2026
+
+## Ringkasan Data Kunci 2027
+
+- Total Hari Libur Nasional 2027: 18 Hari
+- Total Cuti Bersama 2027: 8 Hari
+- Total Tanggal Merah & Libur Resmi 2027: 26 Hari
+- Hari Raya Idulfitri 1448 H: 10–11 Maret 2027 (Cuti Bersama: 9, 12, 15 Maret 2027)
+- Peluang Libur Panjang (Long Weekend): 11 kesempatan utama sepanjang 2027
+
+## Fitur Utama
+
+- [Kalender Interaktif 2027](https://calendar.gandivalabs.my.id/#kalender-2027): Tampilan bulanan dan tahunan dengan status libur nasional, cuti bersama, dan hari ini.
+- [Rekomendasi Cuti 2027](https://calendar.gandivalabs.my.id/#rekomendasi-cuti): Algoritma kalkulasi cuti hemat untuk memaksimalkan libur beruntun (4 hingga 9 hari libur hanya dengan 1–2 hari jatah cuti tahunan).
+- [Penanggalan Budaya Jawa & Hijriah](https://calendar.gandivalabs.my.id/#kalender-jawa): Siklus Panca Wara (Legi, Pahing, Pon, Wage, Kliwon) serta penanggalan lunar Hijriah Umm al-Qura.
+- [Ekspor Kalender PDF](https://calendar.gandivalabs.my.id): Cetak instan kalender meja/dinding 12 bulan dalam format PDF rapi.
+- [Sinkronisasi Kalender (.ics)](https://calendar.gandivalabs.my.id): Impor jadwal libur nasional langsung ke Google Calendar, Apple iCal, atau Microsoft Outlook.
+- [Informasi Lengkap LLM](https://calendar.gandivalabs.my.id/llms-full.txt): Dataset lengkap tanggal libur, cuti bersama, dan strategi cuti 2027.

@@ -19,27 +19,37 @@ export default function Navbar({
   return (
     <header className="sticky top-0 z-40 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Brand / Title */}
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200">
-            {/* Clean Calendar SVG Icon */}
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
-              />
-            </svg>
+        {/* Brand / Title: Logo Gandiva Labs & Tulisan Kalender */}
+        <a
+          href="https://calendar.gandivalabs.my.id"
+          className="flex items-center gap-2.5 group"
+          title="Kalender 2027 Indonesia - Gandiva Labs"
+        >
+          <div className="flex items-center justify-center h-9 w-9 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-1.5 transition-transform group-hover:scale-105">
+            <img
+              src="/gandiva-mark-dark.webp"
+              alt="Gandiva Labs Logo"
+              width={28}
+              height={28}
+              className="w-full h-full object-contain dark:hidden"
+            />
+            <img
+              src="/gandiva-mark-light.webp"
+              alt="Gandiva Labs Logo"
+              width={28}
+              height={28}
+              className="w-full h-full object-contain hidden dark:block"
+            />
           </div>
-          <div>
-            <span className="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 block">
-              Kalender Resmi
+          <div className="flex flex-col">
+            <span className="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 leading-tight">
+              Kalender
             </span>
-            <span className="text-[11px] text-zinc-500 dark:text-zinc-400 block -mt-0.5">
-              Republik Indonesia
+            <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-normal leading-none">
+              powered by Gandiva Labs
             </span>
           </div>
-        </div>
+        </a>
 
         {/* Center: Year Switcher Segmented Control */}
         <div className="flex items-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 p-1">
