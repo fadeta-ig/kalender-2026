@@ -6,7 +6,9 @@ import { getCulturalDateInfo } from "@/lib/culturalCalendar";
 type CalendarGridViewProps = {
   calendarMonths: CalendarMonth[];
   showCulturalOverlay?: boolean;
+  selectedDate?: string | null;
   highlightedPersonalLeaveDates?: Set<string>;
+  onSelectDate?: (dateStr: string) => void;
   onSelectMonth?: (monthIndex: number) => void;
 };
 
@@ -15,13 +17,15 @@ const DAY_LABELS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"] as const;
 export default function CalendarGridView({
   calendarMonths,
   showCulturalOverlay = false,
+  selectedDate,
   highlightedPersonalLeaveDates,
+  onSelectDate,
   onSelectMonth,
 }: CalendarGridViewProps) {
   const todayString = new Date().toISOString().split("T")[0];
 
   return (
-    <section className="grid gap-5 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <section className="grid gap-4 sm:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {calendarMonths.map((monthData) => {
         // Daftar hari libur & cuti bersama pada bulan ini
         const monthHolidays = monthData.days
@@ -43,7 +47,7 @@ export default function CalendarGridView({
                   type="button"
                   onClick={() => onSelectMonth?.(monthData.month)}
                   className="text-left group flex items-center gap-1.5"
-                  title="Klik untuk membuka tampilan fokus bulan ini"
+                  title="Buka tampilan fokus untuk bulan ini"
                 >
                   <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight">
                     {monthData.monthName} {monthData.year}
@@ -53,10 +57,10 @@ export default function CalendarGridView({
                   </svg>
                 </button>
 
-                <div className="flex items-center gap-2 text-[11px]">
+                <div className="flex items-center gap-1.5 text-[11px]">
                   {holidaysCount > 0 && (
-                    <span className="inline-flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    <span className="inline-flex items-center gap-1 font-medium text-red-600 dark:text-red-400">
+                      <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
                       {holidaysCount}
                     </span>
                   )}
@@ -85,23 +89,24 @@ export default function CalendarGridView({
                 ))}
               </div>
 
-              {/* Calendar Grid Cells - Proporsi Lega (min-h-[46px]) */}
+              {/* Calendar Grid Cells */}
               <div className="grid grid-cols-7 gap-1">
                 {monthData.days.map((dayData, dayIndex) => {
                   const isToday = dayData.dateString === todayString;
+                  const isSelected = dayData.dateString === selectedDate;
                   const isPersonalLeave =
                     dayData.isCurrentMonth &&
                     highlightedPersonalLeaveDates?.has(dayData.dateString);
 
                   let cellStyle = "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800";
                   if (!dayData.isCurrentMonth) {
-                    cellStyle = "text-zinc-300 dark:text-zinc-700 pointer-events-none";
+                    cellStyle = "text-zinc-300 dark:text-zinc-700 pointer-events-none opacity-40";
+                  } else if (dayData.isHoliday) {
+                    cellStyle = "bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-medium border border-red-200/80 dark:border-red-800/60";
+                  } else if (dayData.isCutiBersama) {
+                    cellStyle = "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-medium border border-blue-200/80 dark:border-blue-800/60";
                   } else if (isPersonalLeave) {
                     cellStyle = "bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 font-medium border border-amber-300 dark:border-amber-700/80";
-                  } else if (dayData.isHoliday) {
-                    cellStyle = "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-medium border border-emerald-200 dark:border-emerald-800/60";
-                  } else if (dayData.isCutiBersama) {
-                    cellStyle = "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-medium border border-blue-200 dark:border-blue-800/60";
                   } else if (dayData.isWeekend) {
                     cellStyle = "text-zinc-500 dark:text-zinc-400 bg-zinc-50/60 dark:bg-zinc-800/30";
                   }
@@ -116,19 +121,28 @@ export default function CalendarGridView({
                     : dayData.holidayName;
 
                   return (
-                    <div
+                    <button
                       key={`${dayData.dateString}-${dayIndex}`}
+                      type="button"
+                      disabled={!dayData.isCurrentMonth}
                       className={`
                         relative min-h-[44px] sm:min-h-[48px] rounded-md p-0.5
-                        flex flex-col items-center justify-between transition-colors cursor-pointer group
+                        flex flex-col items-center justify-between transition-all cursor-pointer group text-left
                         ${cellStyle}
-                        ${isToday ? "ring-1.5 ring-zinc-900 dark:ring-zinc-100 font-semibold" : ""}
+                        ${isToday ? "ring-1 ring-zinc-900 dark:ring-zinc-100 font-semibold" : ""}
+                        ${isSelected ? "ring-2 ring-zinc-900 dark:ring-zinc-100 z-10" : ""}
                       `}
                       title={tooltipText || undefined}
-                      onClick={() => onSelectMonth?.(monthData.month)}
+                      onClick={() => {
+                        if (dayData.isCurrentMonth) {
+                          onSelectDate?.(dayData.dateString);
+                        }
+                      }}
                     >
                       {/* Tanggal Masehi */}
-                      <span className="text-xs font-semibold pt-0.5">
+                      <span className={`text-xs font-semibold pt-0.5 ${
+                        dayData.date.getDay() === 0 && dayData.isCurrentMonth ? "text-red-600 dark:text-red-400" : ""
+                      }`}>
                         {dayData.day}
                       </span>
 
@@ -147,26 +161,26 @@ export default function CalendarGridView({
                               isPersonalLeave
                                 ? "bg-amber-500"
                                 : dayData.isHoliday
-                                ? "bg-emerald-500"
+                                ? "bg-red-500"
                                 : "bg-blue-500"
                             }`}
                           />
                         )}
                       </div>
 
-                      {/* Tooltip */}
+                      {/* Tooltip Hover di Desktop */}
                       {tooltipText && (
-                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-30">
+                        <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-30">
                           {tooltipText}
                         </div>
                       )}
-                    </div>
+                    </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Mini Agenda Hari Libur di Bawah Grid - JELAS & LANGSUNG TERBACA */}
+            {/* Mini Agenda Hari Libur di Bawah Grid */}
             <div className="mt-3 pt-2.5 border-t border-zinc-100 dark:border-zinc-800">
               {monthHolidays.length === 0 ? (
                 <div className="text-[11px] text-zinc-400 dark:text-zinc-500 text-center py-1 font-normal">
@@ -180,12 +194,13 @@ export default function CalendarGridView({
                     return (
                       <div
                         key={holiday.dateString}
-                        className="flex items-start justify-between text-[11px] gap-2 py-0.5"
+                        onClick={() => onSelectDate?.(holiday.dateString)}
+                        className="flex items-start justify-between text-[11px] gap-2 py-0.5 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
                         <div className="flex items-center gap-1.5 truncate">
                           <span
                             className={`h-1.5 w-1.5 rounded-full shrink-0 ${
-                              isLibur ? "bg-emerald-500" : "bg-blue-500"
+                              isLibur ? "bg-red-500" : "bg-blue-500"
                             }`}
                           />
                           <span className="truncate text-zinc-700 dark:text-zinc-300 font-normal">

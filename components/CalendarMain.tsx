@@ -12,6 +12,8 @@ import CalendarGridView from "./CalendarGridView";
 import CalendarListView from "./CalendarListView";
 import FocusedMonthView from "./FocusedMonthView";
 import MonthQuickNavigator from "./MonthQuickNavigator";
+import MonthSelectorModal from "./MonthSelectorModal";
+import DayDetailInspector from "./DayDetailInspector";
 import LeaveRecommendations from "./LeaveRecommendations";
 import LeaveBudgetSimulator from "./LeaveBudgetSimulator";
 import CalendarSyncModal from "./CalendarSyncModal";
@@ -23,6 +25,15 @@ export default function CalendarMain() {
 
   // Quick Month Navigator state: null = Semua Bulan, 0..11 = Bulan Spesifik
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+
+  // Dialog pemilih bulan (1-tap jump)
+  const [isMonthModalOpen, setIsMonthModalOpen] = useState(false);
+
+  // Tanggal yang sedang dipilih untuk diinspeksi (klik/sentuh)
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  // Set tanggal cuti yang ditandai manual oleh pengguna
+  const [customMarkedDates, setCustomMarkedDates] = useState<Set<string>>(new Set());
 
   // State untuk Fitur #2: Modal Sinkronisasi Kalender
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
@@ -61,6 +72,42 @@ export default function CalendarMain() {
     () => optimizeLeaveBudget(recommendations, leaveQuota, leaveStrategy),
     [recommendations, leaveQuota, leaveStrategy]
   );
+
+  // Gabungan tanggal cuti (simulasi sistem + tandai manual pengguna)
+  const activeHighlightedDates = useMemo(() => {
+    const set = new Set<string>();
+    if (isCalendarHighlighted) {
+      for (const d of simulatedPlan.highlightDateSet) {
+        set.add(d);
+      }
+    }
+    for (const d of customMarkedDates) {
+      set.add(d);
+    }
+    return set;
+  }, [isCalendarHighlighted, simulatedPlan.highlightDateSet, customMarkedDates]);
+
+  // Cari data tanggal yang sedang dipilih (untuk panel inspector di mode 12 bulan)
+  const selectedDayData = useMemo(() => {
+    if (!selectedDate) return null;
+    for (const month of calendarMonths) {
+      const found = month.days.find((d) => d.dateString === selectedDate && d.isCurrentMonth);
+      if (found) return found;
+    }
+    return null;
+  }, [selectedDate, calendarMonths]);
+
+  const handleTogglePersonalLeave = (dateStr: string) => {
+    setCustomMarkedDates((prev) => {
+      const next = new Set(prev);
+      if (next.has(dateStr)) {
+        next.delete(dateStr);
+      } else {
+        next.add(dateStr);
+      }
+      return next;
+    });
+  };
 
   const handleExportPDF = () => {
     exportCalendarToPDF(yearData.holidays, yearData.jointLeave, selectedYear);
@@ -208,11 +255,12 @@ export default function CalendarMain() {
         ) : (
           /* Grid Mode: dengan Quick Month Navigator & Focused View */
           <div className="space-y-6">
-            {/* Quick Month Navigator Bar */}
+            {/* Quick Month Navigator Bar (Quarters di Desktop & Touch Selector di Mobile) */}
             <MonthQuickNavigator
               calendarMonths={calendarMonths}
               selectedMonth={selectedMonth}
               onSelectMonth={(m) => setSelectedMonth(m)}
+              onOpenMonthModal={() => setIsMonthModalOpen(true)}
             />
 
             {/* Jika ada bulan yang dipilih: Tampilkan Focused Single Month View */}
@@ -220,19 +268,37 @@ export default function CalendarMain() {
               <FocusedMonthView
                 monthData={calendarMonths[selectedMonth]}
                 showCulturalOverlay={showCulturalOverlay}
-                highlightedPersonalLeaveDates={isCalendarHighlighted ? simulatedPlan.highlightDateSet : undefined}
+                selectedDate={selectedDate}
+                highlightedPersonalLeaveDates={activeHighlightedDates}
+                onSelectDate={(d) => setSelectedDate(d === selectedDate ? null : d)}
                 onPrevMonth={() => setSelectedMonth((selectedMonth + 11) % 12)}
                 onNextMonth={() => setSelectedMonth((selectedMonth + 1) % 12)}
                 onBackToOverview={() => setSelectedMonth(null)}
+                onTogglePersonalLeave={handleTogglePersonalLeave}
               />
             ) : (
               /* Tinjauan 12 Bulan Lengkap */
-              <CalendarGridView
-                calendarMonths={calendarMonths}
-                showCulturalOverlay={showCulturalOverlay}
-                highlightedPersonalLeaveDates={isCalendarHighlighted ? simulatedPlan.highlightDateSet : undefined}
-                onSelectMonth={(monthIdx) => setSelectedMonth(monthIdx)}
-              />
+              <div className="space-y-5">
+                {/* Interactive Day Inspector jika pengguna memilih tanggal di mode 12 bulan */}
+                {selectedDayData && (
+                  <DayDetailInspector
+                    dayData={selectedDayData}
+                    showCulturalOverlay={showCulturalOverlay}
+                    isPersonalLeave={activeHighlightedDates.has(selectedDayData.dateString)}
+                    onClose={() => setSelectedDate(null)}
+                    onTogglePersonalLeave={handleTogglePersonalLeave}
+                  />
+                )}
+
+                <CalendarGridView
+                  calendarMonths={calendarMonths}
+                  showCulturalOverlay={showCulturalOverlay}
+                  selectedDate={selectedDate}
+                  highlightedPersonalLeaveDates={activeHighlightedDates}
+                  onSelectDate={(d) => setSelectedDate(d === selectedDate ? null : d)}
+                  onSelectMonth={(monthIdx) => setSelectedMonth(monthIdx)}
+                />
+              </div>
             )}
           </div>
         )}
@@ -264,6 +330,16 @@ export default function CalendarMain() {
         jointLeave={yearData.jointLeave}
         customLeaveDates={simulatedPlan.personalLeaveDates}
         onClose={() => setIsSyncModalOpen(false)}
+      />
+
+      {/* Modal Dialog Pemilih Bulan (1-Tap Jump) */}
+      <MonthSelectorModal
+        isOpen={isMonthModalOpen}
+        year={selectedYear}
+        calendarMonths={calendarMonths}
+        selectedMonth={selectedMonth}
+        onSelectMonth={(m) => setSelectedMonth(m)}
+        onClose={() => setIsMonthModalOpen(false)}
       />
     </div>
   );
