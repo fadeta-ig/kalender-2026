@@ -11,7 +11,7 @@ export default function LeaveRecommendations({ recommendations }: Props) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const topRecommendations = useMemo(() => {
-    return recommendations.slice(0, 6);
+    return recommendations.slice(0, 8);
   }, [recommendations]);
 
   const formatDateRange = (startDate: string, endDate: string): string => {
@@ -30,239 +30,170 @@ export default function LeaveRecommendations({ recommendations }: Props) {
     return `${formatter.format(start)} - ${formatter.format(end)} ${yearFormatter.format(end)}`;
   };
 
-  const getEfficiencyColor = (efficiency: number): string => {
-    if (efficiency >= 3) return "text-emerald-400";
-    if (efficiency >= 2) return "text-sky-400";
-    return "text-purple-400";
-  };
-
-  const getEfficiencyLabel = (efficiency: number): string => {
-    if (efficiency >= 3) return "Sangat Efisien";
-    if (efficiency >= 2) return "Efisien";
-    return "Baik";
+  const getSavingsBadge = (rec: LeaveRecommendation) => {
+    const ratio = rec.totalDays / Math.max(rec.leaveDaysNeeded, 1);
+    if (ratio >= 4) {
+      return {
+        label: "Sangat Hemat",
+        classes: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60",
+      };
+    }
+    if (ratio >= 2.5) {
+      return {
+        label: "Hemat Cuti",
+        classes: "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60",
+      };
+    }
+    return {
+      label: "Cukup Baik",
+      classes: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700",
+    };
   };
 
   if (recommendations.length === 0) {
     return (
-      <section className="glass-strong rounded-3xl p-8 text-center animate-scale-in">
-        <p className="text-slate-300">Tidak ada rekomendasi cuti tersedia.</p>
-      </section>
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
+        Belum ada rekomendasi cuti yang tersedia untuk tahun ini.
+      </div>
     );
   }
 
   return (
-    <section className="space-y-8">
-      {/* Header Section */}
-      <div className="text-center space-y-4 animate-slide-up">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-strong">
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-          </span>
-          <span className="text-sm font-semibold text-sky-300 uppercase tracking-wider">
-            AI Recommendations
-          </span>
+    <section className="space-y-6">
+      {/* Intro Header */}
+      <div className="text-center space-y-2 max-w-2xl mx-auto">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-medium text-zinc-700 dark:text-zinc-300">
+          <svg className="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.493 1.508 1.333 1.508 2.316V18" />
+          </svg>
+          <span>Panduan Rencana Liburan</span>
         </div>
-        <h2 className="text-3xl font-bold lg:text-4xl gradient-text">
-          Rekomendasi Cuti Optimal
+        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Tips Libur Hemat Cuti
         </h2>
-        <p className="text-slate-300 max-w-2xl mx-auto">
-          Algoritma AI kami menganalisis pola libur nasional dan cuti bersama untuk menemukan
-          peluang terbaik mendapatkan libur panjang dengan cuti minimal.
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 font-normal">
+          Manfaatkan posisi hari libur resmi dan akhir pekan untuk menikmati istirahat panjang dengan hanya menggunakan sedikit jatah cuti kerja.
         </p>
       </div>
 
-      {/* Top 3 Highlights */}
-      <div className="grid gap-6 md:grid-cols-3">
-        {topRecommendations.slice(0, 3).map((rec, index) => (
-          <article
-            key={rec.id}
-            className="glass-strong rounded-2xl p-6 hover-lift cursor-pointer animate-scale-in"
-            style={{ animationDelay: `${index * 0.1}s` }}
-            onClick={() => setExpandedId(expandedId === rec.id ? null : rec.id)}
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-sky-500 to-purple-600 text-white font-bold text-sm">
-                  {index + 1}
+      {/* Cards List */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {topRecommendations.map((rec) => {
+          const isExpanded = expandedId === rec.id;
+          const badge = getSavingsBadge(rec);
+
+          return (
+            <article
+              key={rec.id}
+              className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 transition-colors flex flex-col justify-between"
+            >
+              <div>
+                {/* Top Badge & Date range */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded ${badge.classes}`}>
+                    {badge.label}
+                  </span>
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400 font-normal">
+                    {formatDateRange(rec.startDate, rec.endDate)}
+                  </span>
                 </div>
-                <span className={`text-xs font-semibold uppercase tracking-wider ${getEfficiencyColor(rec.efficiency)}`}>
-                  {getEfficiencyLabel(rec.efficiency)}
-                </span>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-white">{rec.totalDays}</div>
-                <div className="text-xs text-slate-400 uppercase">Hari Libur</div>
-              </div>
-            </div>
 
-            <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
-              {rec.title}
-            </h3>
+                {/* Title */}
+                <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight mb-2">
+                  {rec.title}
+                </h3>
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
+                  {rec.description}
+                </p>
 
-            <p className="text-sm text-slate-300 mb-4 line-clamp-2">
-              {rec.description}
-            </p>
+                {/* Stat Metrics Pill */}
+                <div className="grid grid-cols-2 gap-2.5 mb-4">
+                  <div className="p-2.5 rounded-lg border border-zinc-100 dark:border-zinc-800/80 bg-zinc-50 dark:bg-zinc-800/40 text-center">
+                    <div className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                      {rec.totalDays} Hari
+                    </div>
+                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                      Total Hari Libur
+                    </div>
+                  </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-white/10">
-              <div className="text-center">
-                <div className="text-xl font-bold text-sky-400">{rec.leaveDaysNeeded}</div>
-                <div className="text-xs text-slate-400">Cuti Diperlukan</div>
+                  <div className="p-2.5 rounded-lg border border-zinc-100 dark:border-zinc-800/80 bg-zinc-50 dark:bg-zinc-800/40 text-center">
+                    <div className="text-lg font-semibold text-blue-600 dark:text-blue-400">
+                      {rec.leaveDaysNeeded} Hari
+                    </div>
+                    <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                      Pakai Cuti Kerja
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="h-8 w-px bg-white/20"></div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-emerald-400">{rec.efficiency.toFixed(1)}x</div>
-                <div className="text-xs text-slate-400">Efisiensi</div>
-              </div>
-              <div className="h-8 w-px bg-white/20"></div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-purple-400">{rec.savings}</div>
-                <div className="text-xs text-slate-400">Hemat</div>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
 
-      {/* All Recommendations List */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-white flex items-center gap-2">
-          <span className="flex h-1.5 w-1.5 rounded-full bg-sky-400"></span>
-          Semua Rekomendasi
-        </h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          {topRecommendations.map((rec, index) => {
-            const isExpanded = expandedId === rec.id;
-
-            return (
-              <article
-                key={rec.id}
-                className="glass-card rounded-2xl overflow-hidden hover-lift transition-all duration-300 animate-slide-up"
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
-                <div
-                  className="p-5 cursor-pointer"
+              {/* Toggle Detail Button */}
+              <div className="border-t border-zinc-100 dark:border-zinc-800/80 pt-3">
+                <button
+                  type="button"
                   onClick={() => setExpandedId(isExpanded ? null : rec.id)}
+                  className="w-full flex items-center justify-between text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 >
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 className="text-base font-semibold text-white mb-1 pr-4">
-                        {rec.title}
-                      </h4>
-                      <p className="text-xs text-slate-400">
-                        {formatDateRange(rec.startDate, rec.endDate)}
-                      </p>
-                    </div>
-                    <div className={`transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                      <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
+                  <span>{isExpanded ? "Sembunyikan Rincian Tanggal" : "Lihat Rincian Tanggal"}</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </button>
 
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 rounded-full bg-sky-400"></div>
-                      <span className="text-sky-300 font-semibold">{rec.totalDays} hari</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 rounded-full bg-purple-400"></div>
-                      <span className="text-purple-300 font-semibold">{rec.leaveDaysNeeded} cuti</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
-                      <span className={`font-semibold ${getEfficiencyColor(rec.efficiency)}`}>
-                        {rec.efficiency.toFixed(1)}x
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Expanded Details */}
+                {/* Expanded Details List */}
                 {isExpanded && (
-                  <div className="px-5 pb-5 pt-2 border-t border-white/10 space-y-3 animate-slide-up">
-                    <p className="text-sm text-slate-300">
-                      {rec.description}
-                    </p>
+                  <div className="mt-3 space-y-1.5 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
+                    {rec.dates.map((item) => {
+                      const dayDate = new Date(item.date);
+                      const dayFormatter = new Intl.DateTimeFormat("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                      });
 
-                    <div className="space-y-1.5 max-h-48 overflow-y-auto">
-                      {rec.dates.map((date) => {
-                        const dayDate = new Date(date.date);
-                        const dayFormatter = new Intl.DateTimeFormat("id-ID", {
-                          day: "numeric",
-                          month: "short",
-                        });
+                      let tagText = "Hari Kerja";
+                      let tagClass = "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400";
 
-                        const typeColors = {
-                          weekend: "bg-slate-700 text-slate-300",
-                          holiday: "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/40",
-                          "joint-leave": "bg-sky-500/20 text-sky-300 ring-1 ring-sky-500/40",
-                          "personal-leave": "bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40",
-                        };
+                      if (item.type === "holiday") {
+                        tagText = "Libur Nasional";
+                        tagClass = "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60";
+                      } else if (item.type === "joint-leave") {
+                        tagText = "Cuti Bersama";
+                        tagClass = "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60";
+                      } else if (item.type === "weekend") {
+                        tagText = "Akhir Pekan";
+                        tagClass = "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400";
+                      } else if (item.type === "personal-leave") {
+                        tagText = "Ambil Cuti";
+                        tagClass = "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 font-medium";
+                      }
 
-                        const typeLabels = {
-                          weekend: "Weekend",
-                          holiday: "Libur Nasional",
-                          "joint-leave": "Cuti Bersama",
-                          "personal-leave": "Ambil Cuti",
-                        };
-
-                        return (
-                          <div
-                            key={`${rec.id}-${date.date}`}
-                            className="flex items-center justify-between p-2 rounded-lg bg-white/5 text-xs"
-                          >
-                            <div className="flex items-center gap-2">
-                              <span className="text-slate-400 font-medium w-20">
-                                {dayFormatter.format(dayDate)}
-                              </span>
-                              <span className="text-slate-300">
-                                {date.dayName}
-                              </span>
-                            </div>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${typeColors[date.type]}`}>
-                              {typeLabels[date.type]}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
+                      return (
+                        <div
+                          key={item.date}
+                          className="flex items-center justify-between text-xs py-1 px-2 rounded bg-zinc-50/70 dark:bg-zinc-800/30"
+                        >
+                          <span className="font-normal text-zinc-700 dark:text-zinc-300">
+                            {item.dayName}, {dayFormatter.format(dayDate)}
+                          </span>
+                          <span className={`text-[10px] px-2 py-0.5 rounded ${tagClass}`}>
+                            {tagText}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
-              </article>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="glass-strong rounded-2xl p-6 animate-slide-up">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          Quick Insights
-        </h3>
-        <div className="grid gap-4 sm:grid-cols-3 text-center">
-          <div className="space-y-2">
-            <div className="text-3xl font-bold text-sky-400">
-              {recommendations[0]?.totalDays || 0}
-            </div>
-            <div className="text-sm text-slate-300">Libur Terpanjang</div>
-          </div>
-          <div className="space-y-2">
-            <div className="text-3xl font-bold text-emerald-400">
-              {recommendations[0]?.efficiency.toFixed(1) || 0}x
-            </div>
-            <div className="text-sm text-slate-300">Efisiensi Terbaik</div>
-          </div>
-          <div className="space-y-2">
-            <div className="text-3xl font-bold text-purple-400">
-              {recommendations.slice(0, 3).reduce((sum, rec) => sum + rec.leaveDaysNeeded, 0)}
-            </div>
-            <div className="text-sm text-slate-300">Total Cuti Optimal (Top 3)</div>
-          </div>
-        </div>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

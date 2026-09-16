@@ -18,60 +18,72 @@ export default function CalendarHeader({
   skbInfo,
 }: CalendarHeaderProps) {
   return (
-    <header className="text-center space-y-6 animate-slide-up">
-      {/* SKB Badge */}
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-strong border border-sky-400/30">
-        <svg className="w-4 h-4 text-sky-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-          <path
-            fillRule="evenodd"
-            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-            clipRule="evenodd"
-          />
+    <div className="space-y-6 text-center">
+      {/* Official Badge - Flat hairline border */}
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300">
+        <svg className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-sky-300">
+        <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
           {skbInfo.decreeNumber}
         </span>
       </div>
 
-      <h1 className="text-4xl font-extrabold sm:text-5xl lg:text-6xl gradient-text tracking-tight">
-        Kalender {year}
-      </h1>
+      {/* Main Title - Clean, elegant typography without gradient or overweight text */}
+      <div className="space-y-2">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          Kalender {year} Indonesia
+        </h1>
+        <p className="text-sm sm:text-base text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto font-normal leading-relaxed">
+          Daftar resmi hari libur nasional dan cuti bersama pemerintah, dilengkapi panduan cerdas untuk merencanakan cuti tahunan dengan lebih hemat.
+        </p>
+      </div>
 
-      <p className="mt-4 text-base text-slate-300 sm:text-lg max-w-3xl mx-auto leading-relaxed">
-        Daftar lengkap hari libur nasional dan cuti bersama berdasarkan{" "}
-        <span className="text-white font-medium">SKB 3 Menteri</span> dilengkapi dengan{" "}
-        <span className="text-sky-400 font-semibold">AI rekomendasi cuti optimal</span>.
-      </p>
+      {/* Stats Summary - Flat cards, no shadows, no gradients */}
+      <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-xl mx-auto pt-2">
+        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 text-center">
+          <div className="text-2xl sm:text-3xl font-semibold text-emerald-600 dark:text-emerald-400">
+            {holidaysCount}
+          </div>
+          <div className="text-xs font-normal text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Libur Nasional
+          </div>
+        </div>
 
-      {/* Stats Bar */}
-      <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 mt-6">
-        <div className="text-center">
-          <div className="text-3xl font-bold text-emerald-400">{holidaysCount}</div>
-          <div className="text-xs sm:text-sm text-slate-400 mt-1">Libur Nasional</div>
+        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 text-center">
+          <div className="text-2xl sm:text-3xl font-semibold text-blue-600 dark:text-blue-400">
+            {jointLeaveCount}
+          </div>
+          <div className="text-xs font-normal text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Cuti Bersama
+          </div>
         </div>
-        <div className="h-10 w-px bg-white/15"></div>
-        <div className="text-center">
-          <div className="text-3xl font-bold text-sky-400">{jointLeaveCount}</div>
-          <div className="text-xs sm:text-sm text-slate-400 mt-1">Cuti Bersama</div>
-        </div>
-        <div className="h-10 w-px bg-white/15"></div>
-        <div className="text-center">
-          <div className="text-3xl font-bold text-purple-400">{recommendationsCount}</div>
-          <div className="text-xs sm:text-sm text-slate-400 mt-1">Rekomendasi AI</div>
+
+        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3.5 text-center">
+          <div className="text-2xl sm:text-3xl font-semibold text-zinc-800 dark:text-zinc-200">
+            {recommendationsCount}
+          </div>
+          <div className="text-xs font-normal text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Ide Libur Panjang
+          </div>
         </div>
       </div>
 
-      {/* Legend Indicators */}
-      <div className="flex flex-wrap justify-center gap-3 text-xs sm:text-sm pt-2">
-        <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-emerald-500/20 text-emerald-100 ring-1 ring-inset ring-emerald-400/40">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse-glow" />
-          Libur Nasional
-        </span>
-        <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-sky-500/20 text-sky-100 ring-1 ring-inset ring-sky-400/40">
-          <span className="h-2.5 w-2.5 rounded-full bg-sky-400 animate-pulse-glow" />
-          Cuti Bersama
-        </span>
+      {/* Legend - Subtle flat indicators */}
+      <div className="flex flex-wrap items-center justify-center gap-4 text-xs pt-1">
+        <div className="flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />
+          <span className="text-zinc-600 dark:text-zinc-400 font-normal">Libur Nasional</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-sm bg-blue-500" />
+          <span className="text-zinc-600 dark:text-zinc-400 font-normal">Cuti Bersama</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-sm border border-zinc-400 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800" />
+          <span className="text-zinc-600 dark:text-zinc-400 font-normal">Hari Ini</span>
+        </div>
       </div>
-    </header>
+    </div>
   );
 }

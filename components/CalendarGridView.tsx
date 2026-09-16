@@ -6,32 +6,54 @@ type CalendarGridViewProps = {
   calendarMonths: CalendarMonth[];
 };
 
-const DAY_NAMES = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"] as const;
+const DAY_LABELS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"] as const;
 
 export default function CalendarGridView({ calendarMonths }: CalendarGridViewProps) {
   const todayString = new Date().toISOString().split("T")[0];
 
   return (
-    <section className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {calendarMonths.map((monthData, index) => {
+    <section className="grid gap-4 sm:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {calendarMonths.map((monthData) => {
         const holidaysInMonth = monthData.days.filter((d) => d.isHoliday && d.isCurrentMonth).length;
         const cutiInMonth = monthData.days.filter((d) => d.isCutiBersama && d.isCurrentMonth).length;
 
         return (
           <article
             key={`${monthData.year}-${monthData.month}`}
-            className="glass rounded-3xl p-5 hover-lift animate-scale-in"
-            style={{ animationDelay: `${index * 0.03}s` }}
+            className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 transition-colors"
           >
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center justify-center gap-2">
-              <span className="flex h-2 w-2 rounded-full bg-gradient-to-r from-sky-400 to-purple-500"></span>
-              {monthData.monthName} {monthData.year}
-            </h2>
+            {/* Month title */}
+            <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-zinc-100 dark:border-zinc-800/80">
+              <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
+                {monthData.monthName} {monthData.year}
+              </h2>
+              <div className="flex items-center gap-2 text-[11px] text-zinc-500 dark:text-zinc-400">
+                {holidaysInMonth > 0 && (
+                  <span className="inline-flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    {holidaysInMonth}
+                  </span>
+                )}
+                {cutiInMonth > 0 && (
+                  <span className="inline-flex items-center gap-1 font-medium text-blue-600 dark:text-blue-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                    {cutiInMonth}
+                  </span>
+                )}
+              </div>
+            </div>
 
             {/* Day headers */}
-            <div className="grid grid-cols-7 gap-1 mb-2">
-              {DAY_NAMES.map((day) => (
-                <div key={day} className="text-center text-xs font-semibold text-slate-400 py-1">
+            <div className="grid grid-cols-7 gap-1 mb-1 text-center">
+              {DAY_LABELS.map((day, i) => (
+                <div
+                  key={day}
+                  className={`text-[11px] font-medium py-1 ${
+                    i === 6
+                      ? "text-red-500 dark:text-red-400"
+                      : "text-zinc-400 dark:text-zinc-500"
+                  }`}
+                >
                   {day}
                 </div>
               ))}
@@ -42,58 +64,48 @@ export default function CalendarGridView({ calendarMonths }: CalendarGridViewPro
               {monthData.days.map((dayData, dayIndex) => {
                 const isToday = dayData.dateString === todayString;
 
+                let cellStyle = "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800";
+                if (!dayData.isCurrentMonth) {
+                  cellStyle = "text-zinc-300 dark:text-zinc-700 pointer-events-none";
+                } else if (dayData.isHoliday) {
+                  cellStyle = "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-medium border border-emerald-200 dark:border-emerald-800/60";
+                } else if (dayData.isCutiBersama) {
+                  cellStyle = "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-medium border border-blue-200 dark:border-blue-800/60";
+                } else if (dayData.isWeekend) {
+                  cellStyle = "text-zinc-500 dark:text-zinc-400 bg-zinc-50/60 dark:bg-zinc-800/30";
+                }
+
                 return (
                   <div
                     key={`${dayData.dateString}-${dayIndex}`}
                     className={`
-                      relative aspect-square rounded-lg p-1 text-center text-xs font-medium
-                      transition-all duration-300 cursor-pointer group flex items-center justify-center
-                      ${!dayData.isCurrentMonth ? "text-slate-600 opacity-40" : "text-slate-200"}
-                      ${dayData.isWeekend && dayData.isCurrentMonth ? "bg-white/5" : ""}
-                      ${dayData.isHoliday ? "bg-gradient-to-br from-emerald-500/30 to-emerald-600/20 ring-1 ring-emerald-400/40 text-emerald-100 font-semibold" : ""}
-                      ${dayData.isCutiBersama ? "bg-gradient-to-br from-sky-500/30 to-sky-600/20 ring-1 ring-sky-400/40 text-sky-100 font-semibold" : ""}
-                      ${isToday ? "ring-2 ring-yellow-400 shadow-lg shadow-yellow-400/20 font-bold" : ""}
-                      ${dayData.isCurrentMonth && !dayData.isHoliday && !dayData.isCutiBersama ? "hover:bg-white/10 hover:scale-110" : ""}
+                      relative aspect-square rounded-md text-xs font-normal
+                      flex flex-col items-center justify-center transition-colors cursor-pointer group
+                      ${cellStyle}
+                      ${isToday ? "ring-1.5 ring-zinc-900 dark:ring-zinc-100 font-semibold" : ""}
                     `}
                     title={dayData.holidayName || undefined}
                   >
-                    <span className={isToday ? "text-yellow-400 font-bold" : ""}>
-                      {dayData.day}
-                    </span>
+                    <span>{dayData.day}</span>
+
+                    {/* Indicator dot */}
+                    {dayData.isCurrentMonth && (dayData.isHoliday || dayData.isCutiBersama) && (
+                      <span
+                        className={`block h-1 w-1 rounded-full mt-0.5 ${
+                          dayData.isHoliday ? "bg-emerald-500" : "bg-blue-500"
+                        }`}
+                      />
+                    )}
 
                     {/* Tooltip for holiday name */}
                     {dayData.holidayName && (
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-slate-950/95 border border-slate-700 text-white text-[11px] rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap z-30 shadow-2xl backdrop-blur-md">
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-30">
                         {dayData.holidayName}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-950"></div>
-                      </div>
-                    )}
-
-                    {/* Indicator dots for holidays */}
-                    {(dayData.isHoliday || dayData.isCutiBersama) && (
-                      <div className="absolute bottom-1 left-1/2 -translate-x-1/2">
-                        <span
-                          className={`block w-1.5 h-1.5 rounded-full ${
-                            dayData.isHoliday ? "bg-emerald-400" : "bg-sky-400"
-                          }`}
-                        />
                       </div>
                     )}
                   </div>
                 );
               })}
-            </div>
-
-            {/* Month stats footer */}
-            <div className="mt-4 pt-3 border-t border-white/10 flex justify-center gap-4 text-xs">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span className="text-slate-400">{holidaysInMonth} Libur</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-sky-400"></span>
-                <span className="text-slate-400">{cutiInMonth} Cuti</span>
-              </div>
             </div>
           </article>
         );

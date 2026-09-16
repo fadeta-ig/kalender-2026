@@ -11,39 +11,37 @@ export default function YearSelector({
   selectedYear,
   onSelectYear,
 }: YearSelectorProps) {
-  const years: { year: SupportedYear; label: string; badge?: string }[] = [
-    { year: 2026, label: "Tahun 2026", badge: "Berjalan" },
-    { year: 2027, label: "Tahun 2027", badge: "SKB Resmi" },
+  const options: { year: SupportedYear; title: string; subtitle: string }[] = [
+    { year: 2026, title: "Tahun 2026", subtitle: "Tahun Berjalan" },
+    { year: 2027, title: "Tahun 2027", subtitle: "Resmi SKB Terbaru" },
   ];
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="glass-strong rounded-2xl p-1.5 inline-flex gap-2 relative shadow-2xl border border-white/20">
-        {years.map((item) => {
-          const isActive = selectedYear === item.year;
+    <div className="flex justify-center">
+      <div className="inline-flex rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 p-1">
+        {options.map((item) => {
+          const isSelected = selectedYear === item.year;
           return (
             <button
               key={item.year}
               type="button"
               onClick={() => onSelectYear(item.year)}
-              className={`relative px-5 py-2.5 rounded-xl font-bold text-sm sm:text-base transition-all duration-300 flex items-center gap-2.5 ${
-                isActive
-                  ? "bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-600 text-white shadow-lg shadow-sky-500/25 scale-[1.02]"
-                  : "text-slate-300 hover:text-white hover:bg-white/5"
+              className={`flex items-center gap-2.5 px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+                isSelected
+                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/90 dark:border-zinc-700/90"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
               }`}
             >
-              <span>{item.label}</span>
-              {item.badge && (
-                <span
-                  className={`text-[10px] tracking-wider uppercase font-semibold px-2 py-0.5 rounded-full transition-colors ${
-                    isActive
-                      ? "bg-white/25 text-white ring-1 ring-white/30"
-                      : "bg-white/10 text-slate-400 group-hover:text-slate-200"
-                  }`}
-                >
-                  {item.badge}
-                </span>
-              )}
+              <span>{item.title}</span>
+              <span
+                className={`text-[10px] px-2 py-0.5 rounded font-normal ${
+                  isSelected
+                    ? "bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300"
+                    : "text-zinc-400 dark:text-zinc-500"
+                }`}
+              >
+                {item.subtitle}
+              </span>
             </button>
           );
         })}
