@@ -1,14 +1,21 @@
 "use client";
 
 import type { CalendarMonth } from "@/lib/calendar";
+import { getCulturalDateInfo } from "@/lib/culturalCalendar";
 
 type CalendarGridViewProps = {
   calendarMonths: CalendarMonth[];
+  showCulturalOverlay?: boolean;
+  highlightedPersonalLeaveDates?: Set<string>;
 };
 
 const DAY_LABELS = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"] as const;
 
-export default function CalendarGridView({ calendarMonths }: CalendarGridViewProps) {
+export default function CalendarGridView({
+  calendarMonths,
+  showCulturalOverlay = false,
+  highlightedPersonalLeaveDates,
+}: CalendarGridViewProps) {
   const todayString = new Date().toISOString().split("T")[0];
 
   return (
@@ -63,10 +70,15 @@ export default function CalendarGridView({ calendarMonths }: CalendarGridViewPro
             <div className="grid grid-cols-7 gap-1">
               {monthData.days.map((dayData, dayIndex) => {
                 const isToday = dayData.dateString === todayString;
+                const isPersonalLeave =
+                  dayData.isCurrentMonth &&
+                  highlightedPersonalLeaveDates?.has(dayData.dateString);
 
                 let cellStyle = "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800";
                 if (!dayData.isCurrentMonth) {
                   cellStyle = "text-zinc-300 dark:text-zinc-700 pointer-events-none";
+                } else if (isPersonalLeave) {
+                  cellStyle = "bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 font-medium border border-amber-300 dark:border-amber-700/80";
                 } else if (dayData.isHoliday) {
                   cellStyle = "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-medium border border-emerald-200 dark:border-emerald-800/60";
                 } else if (dayData.isCutiBersama) {
@@ -75,32 +87,53 @@ export default function CalendarGridView({ calendarMonths }: CalendarGridViewPro
                   cellStyle = "text-zinc-500 dark:text-zinc-400 bg-zinc-50/60 dark:bg-zinc-800/30";
                 }
 
+                // Info penanggalan budaya
+                const culturalInfo =
+                  showCulturalOverlay && dayData.isCurrentMonth
+                    ? getCulturalDateInfo(dayData.date)
+                    : null;
+
+                const tooltipText = isPersonalLeave
+                  ? "Rencana Cuti Kerja Anda"
+                  : dayData.holidayName;
+
                 return (
                   <div
                     key={`${dayData.dateString}-${dayIndex}`}
                     className={`
                       relative aspect-square rounded-md text-xs font-normal
-                      flex flex-col items-center justify-center transition-colors cursor-pointer group
+                      flex flex-col items-center justify-center transition-colors cursor-pointer group px-0.5
                       ${cellStyle}
                       ${isToday ? "ring-1.5 ring-zinc-900 dark:ring-zinc-100 font-semibold" : ""}
                     `}
-                    title={dayData.holidayName || undefined}
+                    title={tooltipText || undefined}
                   >
                     <span>{dayData.day}</span>
 
+                    {/* Cultural Overlay (Hijriah & Pasaran Jawa) */}
+                    {culturalInfo && (
+                      <span className="text-[9px] text-zinc-400 dark:text-zinc-500 leading-none -mt-0.5 scale-[0.82] origin-center truncate max-w-full font-normal">
+                        {culturalInfo.combined}
+                      </span>
+                    )}
+
                     {/* Indicator dot */}
-                    {dayData.isCurrentMonth && (dayData.isHoliday || dayData.isCutiBersama) && (
+                    {dayData.isCurrentMonth && (dayData.isHoliday || dayData.isCutiBersama || isPersonalLeave) && (
                       <span
                         className={`block h-1 w-1 rounded-full mt-0.5 ${
-                          dayData.isHoliday ? "bg-emerald-500" : "bg-blue-500"
+                          isPersonalLeave
+                            ? "bg-amber-500"
+                            : dayData.isHoliday
+                            ? "bg-emerald-500"
+                            : "bg-blue-500"
                         }`}
                       />
                     )}
 
-                    {/* Tooltip for holiday name */}
-                    {dayData.holidayName && (
+                    {/* Tooltip for holiday / personal leave */}
+                    {tooltipText && (
                       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 rounded-md border border-zinc-200 dark:border-zinc-700 bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-30">
-                        {dayData.holidayName}
+                        {tooltipText}
                       </div>
                     )}
                   </div>

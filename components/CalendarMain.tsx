@@ -5,36 +5,56 @@ import { getCalendarData, type SupportedYear } from "@/data/holidays";
 import { generateCalendarMonths, buildSchedules } from "@/lib/calendar";
 import { analyzeLeaveOpportunities } from "@/lib/leaveRecommendation";
 import { exportCalendarToPDF } from "@/lib/pdfExport";
+import { optimizeLeaveBudget, type LeaveStrategy } from "@/lib/leaveOptimizer";
 import Navbar from "./Navbar";
 import CalendarHeader from "./CalendarHeader";
 import CalendarGridView from "./CalendarGridView";
 import CalendarListView from "./CalendarListView";
 import LeaveRecommendations from "./LeaveRecommendations";
+import LeaveBudgetSimulator from "./LeaveBudgetSimulator";
+import CalendarSyncModal from "./CalendarSyncModal";
 
 export default function CalendarMain() {
   const [selectedYear, setSelectedYear] = useState<SupportedYear>(2027);
   const [activeTab, setActiveTab] = useState<"calendar" | "tips">("calendar");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  // Load holiday data for active year
+  // State untuk Fitur #2: Modal Sinkronisasi Kalender
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+
+  // State untuk Fitur #5: Minimalist Cultural Overlay (Hijriah & Pasaran Jawa)
+  const [showCulturalOverlay, setShowCulturalOverlay] = useState(false);
+
+  // State untuk Fitur #1: Smart Leave Budget Simulator
+  const [leaveQuota, setLeaveQuota] = useState(5);
+  const [leaveStrategy, setLeaveStrategy] = useState<LeaveStrategy>("longest");
+  const [isCalendarHighlighted, setIsCalendarHighlighted] = useState(false);
+
+  // Ambil data hari libur resmi untuk tahun yang dipilih
   const yearData = useMemo(() => getCalendarData(selectedYear), [selectedYear]);
 
-  // Generate calendar grid for active year
+  // Bangun grid kalender 12 bulan
   const calendarMonths = useMemo(
     () => generateCalendarMonths(selectedYear, yearData.holidays, yearData.jointLeave),
     [selectedYear, yearData]
   );
 
-  // Generate list schedules for active year
+  // Bangun daftar jadwal bulanan
   const schedules = useMemo(
     () => buildSchedules(selectedYear, yearData.holidays, yearData.jointLeave),
     [selectedYear, yearData]
   );
 
-  // Recommendations for active year
+  // Hitung semua peluang rekomendasi cuti
   const recommendations = useMemo(
     () => analyzeLeaveOpportunities(yearData.holidays, yearData.jointLeave),
     [yearData]
+  );
+
+  // Hitung simulasi jatah cuti personal (Fitur #1)
+  const simulatedPlan = useMemo(
+    () => optimizeLeaveBudget(recommendations, leaveQuota, leaveStrategy),
+    [recommendations, leaveQuota, leaveStrategy]
   );
 
   const handleExportPDF = () => {
@@ -48,6 +68,7 @@ export default function CalendarMain() {
         selectedYear={selectedYear}
         onSelectYear={setSelectedYear}
         onExportPDF={handleExportPDF}
+        onOpenSync={() => setIsSyncModalOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -62,7 +83,7 @@ export default function CalendarMain() {
         />
 
         {/* Primary Tabs Navigation - Flat segmented control */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
           <div className="flex items-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 p-1 w-full sm:w-auto">
             <button
               type="button"
@@ -91,24 +112,31 @@ export default function CalendarMain() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.493 1.508 1.333 1.508 2.316V18" />
               </svg>
-              <span>Tips Libur Hemat Cuti</span>
+              <span>Tips Libur & Simulasi Cuti</span>
             </button>
           </div>
 
-          {/* Sub-toggle: Bulan / Daftar (Active when on calendar tab) */}
+          {/* Sub-controls when on calendar tab */}
           {activeTab === "calendar" && (
-            <div className="flex items-center justify-between w-full sm:w-auto gap-3">
+            <div className="flex flex-wrap items-center justify-between lg:justify-end gap-2.5">
+              {/* Toggle Fitur #5: Penanggalan Budaya (Hijriah & Pasaran Jawa) */}
               <button
                 type="button"
-                onClick={handleExportPDF}
-                className="sm:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-medium text-zinc-700 dark:text-zinc-300"
+                onClick={() => setShowCulturalOverlay(!showCulturalOverlay)}
+                className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                  showCulturalOverlay
+                    ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900"
+                    : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+                }`}
+                title="Tampilkan tanggal Hijriah dan pasaran Jawa (Pon, Wage, Kliwon, Legi, Pahing)"
               >
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
                 </svg>
-                <span>Unduh PDF</span>
+                <span>Hijriah & Pasaran</span>
               </button>
 
+              {/* View Mode Toggle: Grid vs List */}
               <div className="flex items-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 p-1">
                 <button
                   type="button"
@@ -146,9 +174,27 @@ export default function CalendarMain() {
 
         {/* Tab Content Display */}
         {activeTab === "tips" ? (
-          <LeaveRecommendations recommendations={recommendations} />
+          <div className="space-y-8">
+            {/* Fitur #1: Smart Leave Budget Simulator */}
+            <LeaveBudgetSimulator
+              quota={leaveQuota}
+              strategy={leaveStrategy}
+              plan={simulatedPlan}
+              isCalendarHighlighted={isCalendarHighlighted}
+              onUpdateQuota={setLeaveQuota}
+              onUpdateStrategy={setLeaveStrategy}
+              onToggleHighlightCalendar={() => setIsCalendarHighlighted(!isCalendarHighlighted)}
+            />
+
+            {/* Rekomendasi Cuti Umum */}
+            <LeaveRecommendations recommendations={recommendations} />
+          </div>
         ) : viewMode === "grid" ? (
-          <CalendarGridView calendarMonths={calendarMonths} />
+          <CalendarGridView
+            calendarMonths={calendarMonths}
+            showCulturalOverlay={showCulturalOverlay}
+            highlightedPersonalLeaveDates={isCalendarHighlighted ? simulatedPlan.highlightDateSet : undefined}
+          />
         ) : (
           <CalendarListView schedules={schedules} />
         )}
@@ -171,6 +217,16 @@ export default function CalendarMain() {
           </p>
         </footer>
       </main>
+
+      {/* Modal Sinkronisasi Kalender (Fitur #2) */}
+      <CalendarSyncModal
+        isOpen={isSyncModalOpen}
+        year={selectedYear}
+        holidays={yearData.holidays}
+        jointLeave={yearData.jointLeave}
+        customLeaveDates={simulatedPlan.personalLeaveDates}
+        onClose={() => setIsSyncModalOpen(false)}
+      />
     </div>
   );
 }
