@@ -10,6 +10,8 @@ import Navbar from "./Navbar";
 import CalendarHeader from "./CalendarHeader";
 import CalendarGridView from "./CalendarGridView";
 import CalendarListView from "./CalendarListView";
+import FocusedMonthView from "./FocusedMonthView";
+import MonthQuickNavigator from "./MonthQuickNavigator";
 import LeaveRecommendations from "./LeaveRecommendations";
 import LeaveBudgetSimulator from "./LeaveBudgetSimulator";
 import CalendarSyncModal from "./CalendarSyncModal";
@@ -18,6 +20,9 @@ export default function CalendarMain() {
   const [selectedYear, setSelectedYear] = useState<SupportedYear>(2027);
   const [activeTab, setActiveTab] = useState<"calendar" | "tips">("calendar");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  // Quick Month Navigator state: null = Semua Bulan, 0..11 = Bulan Spesifik
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
 
   // State untuk Fitur #2: Modal Sinkronisasi Kalender
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
@@ -61,18 +66,22 @@ export default function CalendarMain() {
     exportCalendarToPDF(yearData.holidays, yearData.jointLeave, selectedYear);
   };
 
+  const handleYearChange = (year: SupportedYear) => {
+    setSelectedYear(year);
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col transition-colors duration-150">
       {/* Top Enterprise Navbar */}
       <Navbar
         selectedYear={selectedYear}
-        onSelectYear={setSelectedYear}
+        onSelectYear={handleYearChange}
         onExportPDF={handleExportPDF}
         onOpenSync={() => setIsSyncModalOpen(true)}
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-10">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
         {/* Header & Stats */}
         <CalendarHeader
           year={selectedYear}
@@ -140,7 +149,9 @@ export default function CalendarMain() {
               <div className="flex items-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 p-1">
                 <button
                   type="button"
-                  onClick={() => setViewMode("grid")}
+                  onClick={() => {
+                    setViewMode("grid");
+                  }}
                   className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
                     viewMode === "grid"
                       ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/80"
@@ -155,7 +166,10 @@ export default function CalendarMain() {
 
                 <button
                   type="button"
-                  onClick={() => setViewMode("list")}
+                  onClick={() => {
+                    setViewMode("list");
+                    setSelectedMonth(null); // List view menampilkan semua jadwal
+                  }}
                   className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
                     viewMode === "list"
                       ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/80"
@@ -189,14 +203,38 @@ export default function CalendarMain() {
             {/* Rekomendasi Cuti Umum */}
             <LeaveRecommendations recommendations={recommendations} />
           </div>
-        ) : viewMode === "grid" ? (
-          <CalendarGridView
-            calendarMonths={calendarMonths}
-            showCulturalOverlay={showCulturalOverlay}
-            highlightedPersonalLeaveDates={isCalendarHighlighted ? simulatedPlan.highlightDateSet : undefined}
-          />
-        ) : (
+        ) : viewMode === "list" ? (
           <CalendarListView schedules={schedules} />
+        ) : (
+          /* Grid Mode: dengan Quick Month Navigator & Focused View */
+          <div className="space-y-6">
+            {/* Quick Month Navigator Bar */}
+            <MonthQuickNavigator
+              calendarMonths={calendarMonths}
+              selectedMonth={selectedMonth}
+              onSelectMonth={(m) => setSelectedMonth(m)}
+            />
+
+            {/* Jika ada bulan yang dipilih: Tampilkan Focused Single Month View */}
+            {selectedMonth !== null ? (
+              <FocusedMonthView
+                monthData={calendarMonths[selectedMonth]}
+                showCulturalOverlay={showCulturalOverlay}
+                highlightedPersonalLeaveDates={isCalendarHighlighted ? simulatedPlan.highlightDateSet : undefined}
+                onPrevMonth={() => setSelectedMonth((selectedMonth + 11) % 12)}
+                onNextMonth={() => setSelectedMonth((selectedMonth + 1) % 12)}
+                onBackToOverview={() => setSelectedMonth(null)}
+              />
+            ) : (
+              /* Tinjauan 12 Bulan Lengkap */
+              <CalendarGridView
+                calendarMonths={calendarMonths}
+                showCulturalOverlay={showCulturalOverlay}
+                highlightedPersonalLeaveDates={isCalendarHighlighted ? simulatedPlan.highlightDateSet : undefined}
+                onSelectMonth={(monthIdx) => setSelectedMonth(monthIdx)}
+              />
+            )}
+          </div>
         )}
 
         {/* Enterprise Flat Footer */}
