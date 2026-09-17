@@ -57,7 +57,10 @@ export default function BurnoutRadarCard({
   const isTopRechargeApplied = topRecharge ? customMarkedDates.has(topRecharge.date) : false;
 
   return (
-    <div className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6 shadow-sm space-y-5">
+    <div
+      id="tour-burnout-radar"
+      className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6 shadow-sm space-y-5"
+    >
       {/* Header: Judul, Subjudul, dan Badge Status Stamina */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-100 dark:border-zinc-800/80">
         <div className="space-y-1">

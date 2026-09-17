@@ -4,13 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 
 const STORAGE_KEY = "gandiva_tour_seen_v1";
 
-export function useFeatureTour(totalSteps: number = 5) {
+export function useFeatureTour(totalSteps: number = 7) {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    setHasMounted(true);
     try {
       const hasSeenTour = localStorage.getItem(STORAGE_KEY);
       if (!hasSeenTour) {
@@ -64,7 +62,7 @@ export function useFeatureTour(totalSteps: number = 5) {
   }, [totalSteps]);
 
   return {
-    isTourOpen: hasMounted && isTourOpen,
+    isTourOpen,
     currentStep,
     startTour,
     closeTour,

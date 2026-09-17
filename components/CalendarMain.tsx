@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useEffect, useTransition } from "react";
 import { getCalendarData, type SupportedYear } from "@/data/holidays";
 import { generateCalendarMonths, buildSchedules } from "@/lib/calendar";
 import { analyzeLeaveOpportunities, type LeaveRecommendation } from "@/lib/leaveRecommendation";
@@ -85,7 +85,18 @@ export default function CalendarMain() {
     nextStep,
     prevStep,
     goToStep,
-  } = useFeatureTour();
+  } = useFeatureTour(7);
+
+  // Sinkronisasi tab secara otomatis saat langkah tur berpindah
+  useEffect(() => {
+    if (!isTourOpen) return;
+    // Langkah ke-5 (indeks 4) adalah tour-burnout-radar yang berada di dalam tab tips
+    if (currentStep === 4) {
+      setActiveTab("tips");
+    } else {
+      setActiveTab("calendar");
+    }
+  }, [isTourOpen, currentStep, setActiveTab]);
 
   // Ambil data hari libur resmi untuk tahun yang dipilih
   const yearData = useMemo(() => getCalendarData(selectedYear), [selectedYear]);

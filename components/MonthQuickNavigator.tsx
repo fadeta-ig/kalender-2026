@@ -311,6 +311,7 @@ export default function MonthQuickNavigator({
           {/* Tombol Ekspor Data Produktivitas (Notion/Sheets/Obsidian) */}
           {onOpenExportModal && (
             <button
+              id="tour-export-btn"
               type="button"
               onClick={onOpenExportModal}
               className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 text-xs font-medium transition-colors shadow-xs"

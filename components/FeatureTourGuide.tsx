@@ -15,35 +15,49 @@ export const TOUR_STEPS: TourStep[] = [
     badge: "Tahun & Regulasi",
     title: "Ketetapan Resmi SKB 3 Menteri",
     description:
-      "Beralih antara Kalender 2026 dan 2027. Seluruh tanggal merah dan cuti bersama mengacu pada keputusan resmi pemerintah Republik Indonesia.",
+      "Beralih antara Kalender 2026 dan 2027. Seluruh tanggal merah dan cuti bersama disusun mengacu pada ketetapan resmi pemerintah Republik Indonesia.",
   },
   {
     targetId: "tour-month-nav",
     badge: "Navigasi Kalender",
-    title: "Lompat Bulan Cepat (1-Tap)",
+    title: "Lompat Bulan & Tinjauan Kuartal",
     description:
-      "Gunakan tombol pemilih bulan untuk fokus ke satu bulan spesifik atau menampilkan kembali seluruh 12 bulan secara bersamaan.",
+      "Pilih kuartal (Q1 - Q4) atau klik nama bulan untuk fokus ke satu bulan spesifik. Klik 'Semua Bulan' untuk kembali ke tinjauan 12 bulan penuh.",
   },
   {
     targetId: "tour-cultural-toggle",
     badge: "Overlay Kultural",
     title: "Penanggalan Jawa & Hijriah",
     description:
-      "Aktifkan fitur ini untuk menampilkan siklus 5 pasaran Jawa (Legi, Pahing, Pon, Wage, Kliwon), nilai neptu, serta tanggal Hijriah.",
+      "Aktifkan fitur ini untuk menampilkan siklus 5 pasaran Jawa (Legi, Pahing, Pon, Wage, Kliwon), nilai neptu, serta tanggal Hijriah di setiap sel kalender.",
   },
   {
     targetId: "tour-tab-tips",
     badge: "Simulasi Cuti",
     title: "Smart Leave Planner & Harpitnas",
     description:
-      "Tentukan batas kuota cuti tahunan Anda untuk menghitung rekomendasi libur panjang maksimal dengan memanfaatkan hari kejepit nasional.",
+      "Buka tab ini untuk merencanakan kuota cuti tahunan Anda. Sistem menghitung rekomendasi libur panjang maksimal dengan memanfaatkan hari kejepit nasional.",
+  },
+  {
+    targetId: "tour-burnout-radar",
+    badge: "Kesehatan Kerja",
+    title: "Radar Anti-Keletihan & Stamina",
+    description:
+      "Mendeteksi rentang kerja terpanjang tanpa libur resmi dan memberikan resep cuti pemulihan (Strategic Recharge Day) 1-klik untuk menjaga ritme kerja tetap prima.",
+  },
+  {
+    targetId: "tour-export-btn",
+    badge: "Ekosistem Produktivitas",
+    title: "Ekspor Notion, Sheets, & Obsidian",
+    description:
+      "Unduh berkas CSV terstruktur siap impor untuk Notion Database, Google Sheets UTF-8, atau salin tabel Markdown untuk Obsidian hanya dalam 1 klik.",
   },
   {
     targetId: "tour-sync-btn",
-    badge: "Integrasi Perangkat",
-    title: "Sinkronisasi & Ekspor Kalender",
+    badge: "Integrasi Kalender",
+    title: "Sinkronisasi & Kalender PDF",
     description:
-      "Tambahkan seluruh jadwal libur resmi langsung ke Google Calendar, Apple iCal, Microsoft Outlook, atau unduh kalender PDF cetak.",
+      "Tambahkan seluruh jadwal libur resmi langsung ke Google Calendar, Apple iCal, dan Microsoft Outlook, atau unduh kalender PDF cetak A4 Landscape.",
   },
 ];
 
@@ -185,18 +199,22 @@ export default function FeatureTourGuide({
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
 
-      updatePosition();
+      const rafId = requestAnimationFrame(updatePosition);
       const t1 = setTimeout(updatePosition, 100);
       const t2 = setTimeout(updatePosition, 250);
       const t3 = setTimeout(updatePosition, 450);
 
       return () => {
+        cancelAnimationFrame(rafId);
         clearTimeout(t1);
         clearTimeout(t2);
         clearTimeout(t3);
       };
     } else {
-      updatePosition();
+      const rafId = requestAnimationFrame(updatePosition);
+      return () => {
+        cancelAnimationFrame(rafId);
+      };
     }
   }, [isOpen, currentStep, activeStep, updatePosition]);
 
@@ -298,23 +316,15 @@ export default function FeatureTourGuide({
         {/* Panah Petunjuk yang Mengarah Tepat ke Titik Tengah Target */}
         <div
           style={{ left: `${cardPos.arrowLeft}px` }}
-          className={`absolute w-3.5 h-3.5 -translate-x-1/2 rotate-45 bg-white dark:bg-zinc-900 border-zinc-200/90 dark:border-zinc-800/90 transition-all duration-300 pointer-events-none ${
+          className={`absolute w-3.5 h-3.5 -translate-x-1/2 rotate-45 bg-white dark:bg-zinc-900 border-zinc-200/90 dark:border-zinc-800/90 transition-all duration-300 pointer-events-none z-10 ${
             placement === "bottom"
-              ? "-top-2 border-t border-l"
-              : "-bottom-2 border-b border-r"
+              ? "-top-1.5 border-t border-l"
+              : "-bottom-1.5 border-b border-r"
           }`}
         />
 
-        {/* Micro Progress Bar di Puncak Kartu */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-zinc-100 dark:bg-zinc-800 overflow-hidden rounded-t-2xl">
-          <div
-            className="h-full bg-emerald-500 transition-all duration-300 ease-out"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-
-        {/* Header Kartu: Kategori, Indikator Langkah & Tombol Tutup */}
-        <div className="flex items-center justify-between gap-2 pt-1 pb-2 border-b border-zinc-100 dark:border-zinc-800/80">
+        {/* Header Kartu: Kategori, Indikator Langkah, Micro Progress Bar, & Tombol Tutup */}
+        <div className="flex items-center justify-between gap-3 pb-2.5 border-b border-zinc-100 dark:border-zinc-800/80">
           <div className="flex items-center gap-2 min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="relative flex h-2 w-2">
@@ -325,22 +335,32 @@ export default function FeatureTourGuide({
                 {activeStep.badge}
               </span>
             </div>
-            <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium">
-              Langkah {currentStep + 1} dari {steps.length}
+            <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium whitespace-nowrap">
+              {currentStep + 1} / {steps.length}
             </span>
           </div>
 
-          <button
-            type="button"
-            onClick={() => onClose(dontShowAgain)}
-            className="p-1 rounded-md text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
-            title="Tutup panduan"
-            aria-label="Tutup panduan fitur"
-          >
-            <svg className="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-2.5 shrink-0">
+            {/* Micro Progress Bar di dalam Header - Rapi, menyatu, dan bebas bocor visual */}
+            <div className="w-16 sm:w-20 h-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+              <div
+                className="h-full bg-emerald-500 rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => onClose(dontShowAgain)}
+              className="p-1 rounded-md text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
+              title="Tutup panduan"
+              aria-label="Tutup panduan fitur"
+            >
+              <svg className="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Konten Utama: Judul & Deskripsi */}
