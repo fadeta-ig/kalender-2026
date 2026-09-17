@@ -35,12 +35,20 @@ canvas {
   height: auto;
 }
 
-/* Strict Enterprise Aesthetics: Zero shadows, Zero gradients */
-/* Smooth transition for theme switching */
-html.transition-theme *,
-html.transition-theme *::before,
-html.transition-theme *::after {
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+/* Smooth GPU View Transition for Theme Switching (Zero Jank, Zero Layout Thrashing) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.22s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Fallback smooth transition on main surface wrappers only */
+html,
+body,
+header,
+main,
+footer {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 /* Custom scrollbars */

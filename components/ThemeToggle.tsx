@@ -27,18 +27,24 @@ export default function ThemeToggle() {
   const toggleTheme = () => {
     const nextTheme = theme === "light" ? "dark" : "light";
 
-    document.documentElement.classList.add("transition-theme");
-    if (nextTheme === "dark") {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+    const updateThemeDom = () => {
+      if (nextTheme === "dark") {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
+    };
 
-    setTimeout(() => {
-      document.documentElement.classList.remove("transition-theme");
-    }, 150);
+    // Modern View Transitions API untuk transisi GPU buttery smooth tanpa glitch
+    if (typeof document !== "undefined" && "startViewTransition" in document) {
+      (document as unknown as { startViewTransition: (cb: () => void) => void }).startViewTransition(() => {
+        updateThemeDom();
+      });
+    } else {
+      updateThemeDom();
+    }
   };
 
   return (

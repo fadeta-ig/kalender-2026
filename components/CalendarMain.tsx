@@ -193,15 +193,8 @@ export default function CalendarMain() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col transition-colors duration-150">
-      {/* Top Enterprise Navbar */}
-      <Navbar
-        selectedYear={selectedYear}
-        onSelectYear={handleYearChange}
-        onExportPDF={handleExportPDF}
-        onOpenSync={() => setIsSyncModalOpen(true)}
-        onOpenShare={() => handleOpenShare()}
-        onStartTour={startTour}
-      />
+      {/* Top Enterprise Navbar - HANYA ADA Panduan, Tur Panduan, & Toggle Tema */}
+      <Navbar onStartTour={startTour} />
 
       {/* Main Content Area */}
       <main className="flex-1 mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
@@ -334,23 +327,26 @@ export default function CalendarMain() {
               onShareRecommendation={handleOpenRecommendationShare}
             />
           </div>
-        ) : viewMode === "list" ? (
-          <CalendarListView schedules={schedules} />
         ) : (
-          /* Grid Mode: dengan Quick Month Navigator & Focused View */
           <div className="space-y-6">
-            {/* Quick Month Navigator Bar */}
+            {/* Quick Month Navigator Bar & Unified Action Tools (Tahun, Bagikan, PDF, Sinkron) */}
             <div id="tour-month-nav">
               <MonthQuickNavigator
                 calendarMonths={calendarMonths}
                 selectedMonth={selectedMonth}
                 onSelectMonth={(m) => setSelectedMonth(m)}
                 onOpenMonthModal={() => setIsMonthModalOpen(true)}
+                selectedYear={selectedYear}
+                onSelectYear={handleYearChange}
+                onExportPDF={handleExportPDF}
+                onOpenShare={() => handleOpenShare()}
+                onOpenSync={() => setIsSyncModalOpen(true)}
               />
             </div>
 
-            {/* Jika ada bulan yang dipilih: Tampilkan Focused Single Month View */}
-            {selectedMonth !== null ? (
+            {viewMode === "list" ? (
+              <CalendarListView schedules={schedules} />
+            ) : selectedMonth !== null ? (
               <FocusedMonthView
                 monthData={calendarMonths[selectedMonth]}
                 showCulturalOverlay={showCulturalOverlay}
