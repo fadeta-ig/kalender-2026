@@ -67,15 +67,15 @@ export default function MonthQuickNavigator({
       {/* 1. TAMPILAN MOBILE (< 640px) - Ergonomis & Touch-First    */}
       {/* ========================================================= */}
       <div className="block sm:hidden">
-        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2 flex items-center justify-between gap-1.5">
+        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-1.5 flex items-center justify-between gap-1 w-full min-w-0">
           {/* Tombol Panah Mundur */}
           <button
             type="button"
             onClick={handlePrev}
-            className="w-9 h-9 rounded-lg border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 active:scale-95 transition-all shrink-0"
+            className="w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 active:scale-95 transition-all shrink-0"
             aria-label="Bulan sebelumnya"
           >
-            <svg className="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
           </button>
@@ -84,9 +84,9 @@ export default function MonthQuickNavigator({
           <button
             type="button"
             onClick={onOpenMonthModal}
-            className="flex-1 h-9 px-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-between gap-1.5 active:scale-[0.98] transition-all overflow-hidden"
+            className="flex-1 min-w-0 h-8 px-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-between gap-1 active:scale-[0.98] transition-all overflow-hidden"
           >
-            <div className="flex items-center gap-1.5 truncate">
+            <div className="flex items-center gap-1 min-w-0 truncate">
               <svg className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
               </svg>
@@ -97,11 +97,11 @@ export default function MonthQuickNavigator({
 
             <div className="flex items-center gap-1 shrink-0">
               {currentMonthData && currentMonthHolidays > 0 && (
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60">
-                  {currentMonthHolidays} Libur
+                <span className="px-1 py-0.2 rounded text-[9px] font-medium bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60 leading-tight">
+                  {currentMonthHolidays}
                 </span>
               )}
-              <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3 h-3 text-zinc-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
               </svg>
             </div>
@@ -111,10 +111,10 @@ export default function MonthQuickNavigator({
           <button
             type="button"
             onClick={handleNext}
-            className="w-9 h-9 rounded-lg border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 active:scale-95 transition-all shrink-0"
+            className="w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 active:scale-95 transition-all shrink-0"
             aria-label="Bulan berikutnya"
           >
-            <svg className="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
           </button>
@@ -123,46 +123,48 @@ export default function MonthQuickNavigator({
           <button
             type="button"
             onClick={() => onSelectMonth(selectedMonth === null ? 0 : null)}
-            className={`h-9 px-2 rounded-lg border text-[11px] font-medium transition-all shrink-0 flex items-center gap-1 ${
+            className={`h-8 px-2 rounded-lg border text-[10px] sm:text-[11px] font-medium transition-all shrink-0 flex items-center gap-1 ${
               selectedMonth === null
                 ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900"
                 : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300"
             }`}
             title="Beralih antara Tinjauan 12 Bulan dan Fokus 1 Bulan"
           >
-            <svg className="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <svg className="w-3 h-3 pointer-events-none shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
             </svg>
-            <span>{selectedMonth === null ? "12 Bulan" : "1 Bln"}</span>
+            <span className="hidden min-[360px]:inline">{selectedMonth === null ? "12 Bulan" : "1 Bln"}</span>
+            <span className="min-[360px]:hidden">{selectedMonth === null ? "12" : "1"}</span>
           </button>
         </div>
       </div>
 
       {/* ========================================================= */}
-      {/* 2. TAMPILAN DESKTOP (>= 640px) - Enterprise Quarter Strip */}
+      {/* 2. TAMPILAN DESKTOP & TABLET (>= 640px) - Enterprise Strip */}
       {/* ========================================================= */}
-      <div className="hidden sm:flex items-center justify-between gap-3 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+      <div className="hidden sm:flex items-center justify-between gap-2 lg:gap-3 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 w-full min-w-0 overflow-hidden">
         {/* Sisi Kiri: Tombol Tampilkan Semua Bulan */}
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
           <button
             type="button"
             onClick={() => onSelectMonth(null)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
               selectedMonth === null
                 ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold"
                 : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800"
             }`}
           >
-            <svg className="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <svg className="w-3.5 h-3.5 pointer-events-none shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
             </svg>
-            <span>Semua Bulan</span>
+            <span className="hidden md:inline">Semua Bulan</span>
+            <span className="md:hidden">Semua</span>
           </button>
 
           <button
             type="button"
             onClick={onOpenMonthModal}
-            className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
             title="Buka dialog pemilih bulan lengkap"
             aria-label="Buka dialog pemilih bulan"
           >
@@ -174,8 +176,8 @@ export default function MonthQuickNavigator({
 
         <div className="h-4 w-px bg-zinc-200 dark:bg-zinc-800 shrink-0" />
 
-        {/* Sisi Kanan: Kuartal Q1 - Q4 dengan Badge Counter Rapi */}
-        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5">
+        {/* Sisi Kanan: Kuartal Q1 - Q4 dengan Scroll Halus & No Overflow */}
+        <div className="flex items-center gap-1.5 lg:gap-2 overflow-x-auto scrollbar-none py-0.5 min-w-0 flex-1">
           {QUARTERS.map((quarter, qIdx) => (
             <div key={quarter.name} className="flex items-center gap-1 shrink-0">
               {qIdx > 0 && (

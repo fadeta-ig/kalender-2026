@@ -216,7 +216,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 min-h-screen transition-colors duration-150">
+      <body className="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 min-h-screen w-full max-w-full overflow-x-hidden relative transition-colors duration-150">
         {children}
       </body>
     </html>

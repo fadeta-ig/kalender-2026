@@ -65,23 +65,23 @@ export default function ShareLeaveModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-7 shadow-2xl space-y-6 text-zinc-900 dark:text-zinc-100"
+        className="w-full max-w-lg rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6 shadow-2xl space-y-4 sm:space-y-5 text-zinc-900 dark:text-zinc-100 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Modal */}
-        <div className="flex items-start justify-between gap-3 border-b border-zinc-100 dark:border-zinc-800 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60">
+        <div className="flex items-start justify-between gap-3 border-b border-zinc-100 dark:border-zinc-800 pb-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60 shrink-0">
               <svg className="w-5 h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
               </svg>
             </div>
-            <div>
-              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
-                Bagikan Rencana Cuti Anda
+            <div className="min-w-0">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-50 truncate">
+                Bagikan Rencana Cuti
               </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                Ajak teman kantor atau keluarga merencanakan liburan bareng di {planData.year}.
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">
+                Ajak teman kantor atau keluarga liburan bareng {planData.year}.
               </p>
             </div>
           </div>
@@ -89,7 +89,7 @@ export default function ShareLeaveModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
             aria-label="Tutup dialog"
           >
             <svg className="w-5 h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -99,11 +99,11 @@ export default function ShareLeaveModal({
         </div>
 
         {/* Visual Preview Card: "Ini Loh Rencana Cuti Saya" */}
-        <div className="rounded-xl border border-emerald-200/80 dark:border-emerald-800/60 bg-gradient-to-br from-emerald-50/70 via-white to-zinc-50 dark:from-emerald-950/30 dark:via-zinc-900 dark:to-zinc-950 p-5 space-y-3 relative overflow-hidden shadow-inner">
+        <div className="rounded-xl border border-emerald-200/80 dark:border-emerald-800/60 bg-gradient-to-br from-emerald-50/70 via-white to-zinc-50 dark:from-emerald-950/30 dark:via-zinc-900 dark:to-zinc-950 p-4 space-y-2.5 relative overflow-hidden shadow-inner">
           <div className="flex items-center justify-between text-xs font-semibold text-emerald-700 dark:text-emerald-400">
             <span className="flex items-center gap-1.5">
               <span>✈️</span>
-              <span>Rencana Libur &amp; Cuti {planData.year}</span>
+              <span>Rencana Libur {planData.year}</span>
             </span>
             <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-[11px]">
               {planData.totalDaysOff} Hari Libur
@@ -111,20 +111,20 @@ export default function ShareLeaveModal({
           </div>
 
           <div>
-            <h4 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+            <h4 className="text-base sm:text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-50 break-words">
               {planData.title}
             </h4>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 break-words">
               Periode: <strong className="text-zinc-800 dark:text-zinc-200">{planData.datesDescription}</strong>
             </p>
           </div>
 
           <div className="pt-2 border-t border-emerald-100 dark:border-emerald-900/40 flex items-center justify-between text-xs">
             <span className="text-zinc-500 dark:text-zinc-400">
-              Cuti yang dipakai: <strong className="text-zinc-800 dark:text-zinc-200">{planData.usedQuota} Hari Kerja</strong>
+              Pakai cuti: <strong className="text-zinc-800 dark:text-zinc-200">{planData.usedQuota} Hari</strong>
             </span>
             <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
-              Cerdas &amp; Hemat!
+              Hemat Cuti!
             </span>
           </div>
         </div>
@@ -134,14 +134,14 @@ export default function ShareLeaveModal({
           <label className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
             Pratinjau Pesan yang Dikirim:
           </label>
-          <div className="p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-xs text-zinc-700 dark:text-zinc-300 font-mono leading-relaxed max-h-24 overflow-y-auto">
+          <div className="p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-xs text-zinc-700 dark:text-zinc-300 font-mono leading-relaxed max-h-20 overflow-y-auto break-words">
             {viralMessage}
           </div>
         </div>
 
         {/* Action Buttons: WhatsApp, Telegram, X & Copy */}
-        <div className="space-y-2.5 pt-1">
-          <div className="grid grid-cols-2 gap-2.5">
+        <div className="space-y-2 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {/* WhatsApp */}
             <a
               href={whatsappUrl}
@@ -169,7 +169,7 @@ export default function ShareLeaveModal({
             </a>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {/* Salin Tautan (Copy Link) */}
             <button
               type="button"

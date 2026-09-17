@@ -38,7 +38,7 @@ export default function CalendarGridView({
         return (
           <article
             key={`${monthData.year}-${monthData.month}`}
-            className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 transition-colors flex flex-col justify-between"
+            className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 sm:p-4 transition-colors flex flex-col justify-between w-full min-w-0 overflow-hidden"
           >
             <div>
               {/* Header Kartu Bulan */}
@@ -168,9 +168,9 @@ export default function CalendarGridView({
                         )}
                       </div>
 
-                      {/* Tooltip Hover di Desktop */}
+                      {/* Tooltip Hover di Desktop (Terkontrol agar tidak bocor keluar layar) */}
                       {tooltipText && (
-                        <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-30">
+                        <div className="hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 rounded border border-zinc-200 dark:border-zinc-700 bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none max-w-[170px] text-center whitespace-normal break-words leading-tight z-30 shadow-sm">
                           {tooltipText}
                         </div>
                       )}
@@ -181,7 +181,7 @@ export default function CalendarGridView({
             </div>
 
             {/* Mini Agenda Hari Libur di Bawah Grid */}
-            <div className="mt-3 pt-2.5 border-t border-zinc-100 dark:border-zinc-800">
+            <div className="mt-3 pt-2.5 border-t border-zinc-100 dark:border-zinc-800 w-full min-w-0">
               {monthHolidays.length === 0 ? (
                 <div className="text-[11px] text-zinc-400 dark:text-zinc-500 text-center py-1 font-normal">
                   Tidak ada hari libur resmi
@@ -195,9 +195,9 @@ export default function CalendarGridView({
                       <div
                         key={holiday.dateString}
                         onClick={() => onSelectDate?.(holiday.dateString)}
-                        className="flex items-start justify-between text-[11px] gap-2 py-0.5 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        className="flex items-start justify-between text-[11px] gap-2 py-0.5 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors w-full min-w-0"
                       >
-                        <div className="flex items-center gap-1.5 truncate">
+                        <div className="flex items-center gap-1.5 truncate min-w-0 flex-1">
                           <span
                             className={`h-1.5 w-1.5 rounded-full shrink-0 ${
                               isLibur ? "bg-red-500" : "bg-blue-500"

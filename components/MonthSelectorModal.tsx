@@ -66,18 +66,18 @@ export default function MonthSelectorModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Modal */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300">
+        <div className="flex items-center justify-between p-3.5 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 shrink-0">
               <svg className="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
               </svg>
             </div>
-            <div>
-              <h2 id="month-selector-title" className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+            <div className="min-w-0">
+              <h2 id="month-selector-title" className="text-base font-semibold text-zinc-900 dark:text-zinc-100 truncate">
                 Pilih Bulan ({year})
               </h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
                 Lompat langsung ke bulan yang ingin Anda lihat
               </p>
             </div>
@@ -86,7 +86,7 @@ export default function MonthSelectorModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="p-1.5 sm:p-2 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
             aria-label="Tutup"
           >
             <svg className="w-5 h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -96,7 +96,7 @@ export default function MonthSelectorModal({
         </div>
 
         {/* Content Body */}
-        <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
+        <div className="p-3.5 sm:p-5 overflow-y-auto space-y-3 sm:space-y-4">
           {/* Tombol Tampilkan Semua Bulan */}
           <button
             type="button"
@@ -104,25 +104,25 @@ export default function MonthSelectorModal({
               onSelectMonth(null);
               onClose();
             }}
-            className={`w-full p-3 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all flex items-center justify-between ${
+            className={`w-full p-2.5 sm:p-3 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all flex items-center justify-between ${
               selectedMonth === null
                 ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900"
                 : "border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 hover:border-zinc-300 dark:hover:border-zinc-700"
             }`}
           >
-            <div className="flex items-center gap-2.5">
-              <svg className="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <div className="flex items-center gap-2 sm:gap-2.5 truncate">
+              <svg className="w-4 h-4 pointer-events-none shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
               </svg>
-              <span>Tampilkan Semua 12 Bulan (Tinjauan Tahunan)</span>
+              <span className="truncate">Semua 12 Bulan (Tinjauan Tahunan)</span>
             </div>
             {selectedMonth === null && (
-              <span className="text-[11px] font-semibold uppercase tracking-wider">Aktif</span>
+              <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider shrink-0">Aktif</span>
             )}
           </button>
 
-          {/* Grid 12 Bulan (3 kolom di HP, 4 kolom di layar lebih besar) */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+          {/* Grid 12 Bulan (2 kolom di HP, 3-4 kolom di layar lebih besar) */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-2.5">
             {calendarMonths.map((m, idx) => {
               const isSelected = selectedMonth === idx;
               const holidayCount = m.days.filter((d) => d.isHoliday && d.isCurrentMonth).length;
@@ -137,7 +137,7 @@ export default function MonthSelectorModal({
                     onSelectMonth(idx);
                     onClose();
                   }}
-                  className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between gap-2.5 active:scale-[0.98] ${
+                  className={`p-2.5 sm:p-3 rounded-xl border text-left transition-all flex flex-col justify-between gap-2 active:scale-[0.98] ${
                     isSelected
                       ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900"
                       : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 hover:border-zinc-300 dark:hover:border-zinc-700"

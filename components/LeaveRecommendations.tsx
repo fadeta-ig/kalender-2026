@@ -89,11 +89,11 @@ export default function LeaveRecommendations({
           return (
             <article
               key={rec.id}
-              className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 transition-colors flex flex-col justify-between"
+              className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 transition-colors flex flex-col justify-between w-full min-w-0 overflow-hidden"
             >
               <div>
                 {/* Top Badge & Date range */}
-                <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
                   <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded ${badge.classes}`}>
                     {badge.label}
                   </span>
@@ -196,12 +196,12 @@ export default function LeaveRecommendations({
                       return (
                         <div
                           key={item.date}
-                          className="flex items-center justify-between text-xs py-1 px-2 rounded bg-zinc-50/70 dark:bg-zinc-800/30"
+                          className="flex items-center justify-between gap-2 text-xs py-1 px-2 rounded bg-zinc-50/70 dark:bg-zinc-800/30 w-full min-w-0"
                         >
-                          <span className="font-normal text-zinc-700 dark:text-zinc-300">
+                          <span className="font-normal text-zinc-700 dark:text-zinc-300 truncate min-w-0 flex-1">
                             {item.dayName}, {dayFormatter.format(dayDate)}
                           </span>
-                          <span className={`text-[10px] px-2 py-0.5 rounded ${tagClass}`}>
+                          <span className={`text-[10px] px-2 py-0.5 rounded shrink-0 ${tagClass}`}>
                             {tagText}
                           </span>
                         </div>

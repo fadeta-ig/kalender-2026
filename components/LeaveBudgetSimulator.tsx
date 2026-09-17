@@ -42,7 +42,7 @@ export default function LeaveBudgetSimulator({
   };
 
   return (
-    <section className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 space-y-6 transition-colors">
+    <section className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6 space-y-5 sm:space-y-6 transition-colors w-full min-w-0 overflow-hidden">
       {/* Header Section */}
       <div className="space-y-1">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/60 text-[11px] font-medium text-zinc-700 dark:text-zinc-300">
@@ -60,9 +60,9 @@ export default function LeaveBudgetSimulator({
       </div>
 
       {/* Controls: Quota Stepper & Strategy Selector */}
-      <div className="grid gap-4 sm:grid-cols-2 p-4 rounded-lg border border-zinc-100 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-800/30">
+      <div className="grid gap-4 sm:grid-cols-2 p-3 sm:p-4 rounded-lg border border-zinc-100 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-800/30">
         {/* Quota Input */}
-        <div className="space-y-2">
+        <div className="space-y-2 min-w-0">
           <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300 block">
             Berapa hari sisa cuti kerja Anda?
           </label>
@@ -71,7 +71,7 @@ export default function LeaveBudgetSimulator({
               type="button"
               onClick={() => onUpdateQuota(Math.max(1, quota - 1))}
               disabled={quota <= 1}
-              className="w-9 h-9 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 flex items-center justify-center font-medium disabled:opacity-40 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+              className="w-9 h-9 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 flex items-center justify-center font-medium disabled:opacity-40 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors shrink-0"
               aria-label="Kurangi cuti"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -79,7 +79,7 @@ export default function LeaveBudgetSimulator({
               </svg>
             </button>
 
-            <div className="flex-1 text-center py-1.5 px-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-semibold text-base text-zinc-900 dark:text-zinc-100">
+            <div className="flex-1 text-center py-1.5 px-2 sm:px-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 truncate">
               {quota} Hari Cuti
             </div>
 
@@ -87,7 +87,7 @@ export default function LeaveBudgetSimulator({
               type="button"
               onClick={() => onUpdateQuota(Math.min(24, quota + 1))}
               disabled={quota >= 24}
-              className="w-9 h-9 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 flex items-center justify-center font-medium disabled:opacity-40 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+              className="w-9 h-9 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 flex items-center justify-center font-medium disabled:opacity-40 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors shrink-0"
               aria-label="Tambah cuti"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -96,8 +96,8 @@ export default function LeaveBudgetSimulator({
             </button>
           </div>
 
-          {/* Presets */}
-          <div className="flex items-center gap-1.5 pt-1">
+          {/* Presets dengan wrap */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
             <span className="text-[11px] text-zinc-400 dark:text-zinc-500">Pilih Cepat:</span>
             {PRESETS.map((p) => (
               <button
@@ -117,7 +117,7 @@ export default function LeaveBudgetSimulator({
         </div>
 
         {/* Strategy Selector */}
-        <div className="space-y-2">
+        <div className="space-y-2 min-w-0">
           <label className="text-xs font-medium text-zinc-700 dark:text-zinc-300 block">
             Gaya Liburan yang Diinginkan
           </label>
@@ -132,8 +132,8 @@ export default function LeaveBudgetSimulator({
               }`}
             >
               <span className="text-xs font-semibold block">Libur Terpanjang</span>
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 block">
-                Fokus cuti berkumpul di 1-2 waktu besar
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 block leading-tight">
+                Fokus cuti di 1-2 waktu besar
               </span>
             </button>
 
@@ -147,8 +147,8 @@ export default function LeaveBudgetSimulator({
               }`}
             >
               <span className="text-xs font-semibold block">Sering Libur</span>
-              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 block">
-                Banyak long weekend 3-4 hari sepanjang tahun
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 block leading-tight">
+                Banyak long weekend 3-4 hari
               </span>
             </button>
           </div>
@@ -156,56 +156,56 @@ export default function LeaveBudgetSimulator({
       </div>
 
       {/* Output Metric Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 text-center">
-          <div className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+        <div className="p-2.5 sm:p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 text-center">
+          <div className="text-xl sm:text-2xl font-semibold text-emerald-600 dark:text-emerald-400">
             {plan.totalDaysOff} Hari
           </div>
-          <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 font-normal">
+          <div className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 font-normal leading-tight">
             Total Libur Diperoleh
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 text-center">
-          <div className="text-2xl font-semibold text-blue-600 dark:text-blue-400">
+        <div className="p-2.5 sm:p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 text-center">
+          <div className="text-xl sm:text-2xl font-semibold text-blue-600 dark:text-blue-400">
             {plan.leaveDaysUsed} Hari
           </div>
-          <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 font-normal">
+          <div className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 font-normal leading-tight">
             Cuti yang Digunakan
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 text-center">
-          <div className="text-2xl font-semibold text-zinc-700 dark:text-zinc-300">
+        <div className="p-2.5 sm:p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 text-center">
+          <div className="text-xl sm:text-2xl font-semibold text-zinc-700 dark:text-zinc-300">
             {plan.remainingQuota} Hari
           </div>
-          <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 font-normal">
-            Sisa Kuota Cuti Anda
+          <div className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 font-normal leading-tight">
+            Sisa Kuota Cuti
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 text-center">
-          <div className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+        <div className="p-2.5 sm:p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 text-center">
+          <div className="text-xl sm:text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
             {plan.overallEfficiency}x
           </div>
-          <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 font-normal">
+          <div className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 font-normal leading-tight">
             Rasio Hemat Cuti
           </div>
         </div>
       </div>
 
       {/* Action: Highlight on Calendar & Package List */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2 w-full min-w-0">
         <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
           Paket Liburan yang Terpilih ({plan.selectedPackages.length} Periode)
         </h3>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           {onSharePlan && (
             <button
               type="button"
               onClick={onSharePlan}
-              className="px-3 py-1.5 rounded-lg border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-xs"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-xs"
               title="Bagikan rencana libur ini ke WhatsApp atau teman"
             >
               <svg className="w-3.5 h-3.5 pointer-events-none text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -218,7 +218,7 @@ export default function LeaveBudgetSimulator({
           <button
             type="button"
             onClick={onToggleHighlightCalendar}
-            className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors flex items-center gap-2 ${
+            className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors flex items-center justify-center gap-2 ${
               isCalendarHighlighted
                 ? "border-amber-500 bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/80"
                 : "border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
@@ -229,8 +229,8 @@ export default function LeaveBudgetSimulator({
             </svg>
             <span>
               {isCalendarHighlighted
-                ? "Hilangkan Tanda di Kalender"
-                : "Tandai Cuti Ini di Kalender"}
+                ? "Hilangkan Tanda"
+                : "Tandai di Kalender"}
             </span>
           </button>
         </div>
@@ -246,9 +246,9 @@ export default function LeaveBudgetSimulator({
           {plan.selectedPackages.map((pkg, idx) => (
             <div
               key={pkg.id}
-              className="p-3.5 rounded-lg border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/20 space-y-2"
+              className="p-3.5 rounded-lg border border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/20 space-y-2 min-w-0"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
                 <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
                   Paket #{idx + 1}
                 </span>

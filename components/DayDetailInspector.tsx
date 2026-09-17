@@ -54,44 +54,40 @@ export default function DayDetailInspector({
   return (
     <aside
       aria-label="Detail tanggal yang dipilih"
-      className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 transition-all"
+      className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 sm:p-5 transition-all w-full min-w-0 overflow-hidden"
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3">
         {/* Tanggal & Hari Utama */}
-        <div className="space-y-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
+        <div className="space-y-1 min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <h3 className="text-sm sm:text-lg font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight break-words">
               {dayName}, {dateNumber} {monthName} {yearNumber}
             </h3>
 
             {/* Badges Status Hari */}
             {dayData.isHoliday && (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60">
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-medium bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-800/60">
                 <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
                 Libur Nasional
               </span>
             )}
 
             {dayData.isCutiBersama && (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60">
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-medium bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60">
                 <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
                 Cuti Bersama
               </span>
             )}
 
             {isPersonalLeave && (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60">
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-medium bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60">
                 <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
                 Rencana Cuti Anda
               </span>
             )}
 
             {!dayData.isHoliday && !dayData.isCutiBersama && !isPersonalLeave && (
-              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium ${
-                dayData.isWeekend
-                  ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700"
-                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700"
-              }`}>
+              <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-medium bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
                 {dayData.isWeekend ? "Akhir Pekan" : "Hari Kerja"}
               </span>
             )}
@@ -99,7 +95,7 @@ export default function DayDetailInspector({
 
           {/* Keterangan Hari Libur jika ada */}
           {dayData.holidayName ? (
-            <p className="text-sm font-medium text-red-600 dark:text-red-400 pt-0.5">
+            <p className="text-xs sm:text-sm font-medium text-red-600 dark:text-red-400 pt-0.5 break-words">
               {dayData.holidayName}
             </p>
           ) : (

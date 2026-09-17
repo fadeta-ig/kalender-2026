@@ -39,11 +39,11 @@ export default function CalendarListView({ schedules }: CalendarListViewProps) {
                   key={entry.key}
                   className="flex items-center justify-between p-3 rounded-lg border border-zinc-100 dark:border-zinc-800/70 bg-zinc-50/50 dark:bg-zinc-800/30 hover:bg-zinc-100/60 dark:hover:bg-zinc-800/60 transition-colors"
                 >
-                  <div className="space-y-0.5 pr-3">
+                  <div className="space-y-0.5 pr-3 min-w-0 flex-1">
                     <span className="text-[11px] font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wider block">
                       {entry.weekday}
                     </span>
-                    <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200 leading-snug">
+                    <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200 leading-snug break-words">
                       {entry.name}
                     </p>
                   </div>

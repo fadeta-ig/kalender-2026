@@ -130,30 +130,30 @@ export default function CalendarSeoContent() {
     <div className="space-y-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
       {/* 1. Extractable Hero Section: Kalender 2027 Indonesia */}
       <section id="kalender-2027" className="scroll-mt-24 space-y-6">
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 p-6 sm:p-8 space-y-4 shadow-sm">
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 p-4 sm:p-6 lg:p-8 space-y-4 shadow-sm min-w-0">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60">
             <span>Resmi SKB 3 Menteri No. 1205/2026</span>
           </div>
           
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             Panduan Lengkap Kalender 2027 Indonesia & Jadwal Libur Resmi
           </h2>
 
           {/* 40-60 Word Direct Answer Block for AI Overviews & Search Snippets */}
-          <div className="p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-950/60 text-sm sm:text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
+          <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-950/60 text-sm sm:text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
             <strong>Kalender 2027 Indonesia resmi</strong> memuat total <strong>26 hari libur</strong>, yang terdiri dari <strong>18 hari libur nasional</strong> dan <strong>8 hari cuti bersama</strong> berdasarkan Surat Keputusan Bersama (SKB) 3 Menteri. Tahun 2027 menawarkan berbagai peluang <em>long weekend</em> strategis, termasuk libur maraton Idulfitri 1448 H selama 10 hari pada bulan Maret 2027 serta rangkaian libur Iduladha dan Waisak di bulan Mei 2027.
           </div>
 
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
             Situs ini dipersembahkan oleh <strong>Gandiva Labs</strong> untuk membantu para profesional, HR, pelaku usaha, serta keluarga di Indonesia merencanakan agenda tahunan, efisiensi jatah cuti kerja, dan agenda kultural secara cerdas dengan dukungan penanggalan Jawa (weton & pasaran) serta kalender Hijriah.
           </p>
         </div>
 
         {/* Tabel Semantik Hari Libur Nasional & Cuti Bersama 2027 */}
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
-          <div className="p-5 sm:p-6 border-b border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm min-w-0">
+          <div className="p-4 sm:p-6 border-b border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+              <h3 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-100">
                 Daftar Tanggal Merah & Cuti Bersama 2027
               </h3>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
@@ -165,8 +165,8 @@ export default function CalendarSeoContent() {
             </span>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs sm:text-sm">
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[500px] text-left text-xs sm:text-sm">
               <thead className="bg-zinc-50 dark:bg-zinc-950/70 text-zinc-600 dark:text-zinc-400 border-b border-zinc-200 dark:border-zinc-800 font-medium">
                 <tr>
                   <th scope="col" className="py-3 px-4 sm:px-6">Tanggal</th>
@@ -211,36 +211,36 @@ export default function CalendarSeoContent() {
 
       {/* 2. KPI Section: Rekomendasi Cuti 2027 (Long Weekend Hacks) */}
       <section id="rekomendasi-cuti" className="scroll-mt-24 space-y-6">
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 p-6 sm:p-8 space-y-4 shadow-sm">
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 p-4 sm:p-6 lg:p-8 space-y-4 shadow-sm min-w-0">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/60">
             <span>Strategi Smart Leave Planner 2027</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             Rekomendasi Cuti 2027: Trik Libur Panjang Tanpa Boros Jatah Cuti
           </h2>
 
           {/* 40-60 Word Direct Answer Block for AI Search & Featured Snippet */}
-          <div className="p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-950/60 text-sm sm:text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
+          <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-950/60 text-sm sm:text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
             <strong>Rekomendasi cuti 2027 terbaik</strong> menitikberatkan pada pemanfaatan tanggal kejepit (harpitnas) di sekitar libur nasional resmi. Hanya dengan menggunakan <strong>1 hingga 2 hari jatah cuti tahunan</strong>, Anda dapat menikmati <strong>4 hingga 10 hari libur berturut-turut</strong> pada momen Imlek, Idulfitri 1448 H (Maret), Kenaikan Yesus & Waisak (Mei), serta Hari Kemerdekaan RI (Agustus).
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 pt-2">
+            <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 min-w-0">
               <span className="text-xs font-medium text-blue-600 dark:text-blue-400">Trik #1</span>
               <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-1">Cuti Hari Kejepit (Harpitnas)</h4>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
                 Jika hari libur jatuh di hari Selasa atau Kamis, ajukan cuti pada hari Senin atau Jumat untuk menyambung akhir pekan menjadi 4 hari libur.
               </p>
             </div>
-            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+            <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 min-w-0">
               <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Trik #2</span>
               <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-1">Manfaatkan Cuti Bersama</h4>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
                 Cuti bersama pemerintah tidak memotong jatah cuti wajib untuk instansi tertentu atau dapat dimaksimalkan untuk mudik dan liburan luar kota.
               </p>
             </div>
-            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950">
+            <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 sm:col-span-2 md:col-span-1 min-w-0">
               <span className="text-xs font-medium text-purple-600 dark:text-purple-400">Trik #3</span>
               <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-1">Simulasikan dengan Aplikasi</h4>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
@@ -251,9 +251,9 @@ export default function CalendarSeoContent() {
         </div>
 
         {/* Tabel Rekomendasi Cuti 2027 */}
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
-          <div className="p-5 sm:p-6 border-b border-zinc-200 dark:border-zinc-800">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm min-w-0">
+          <div className="p-4 sm:p-6 border-b border-zinc-200 dark:border-zinc-800">
+            <h3 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               Tabel Rekomendasi Libur Panjang (Long Weekend Hacks 2027)
             </h3>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
@@ -261,8 +261,8 @@ export default function CalendarSeoContent() {
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs sm:text-sm">
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[560px] text-left text-xs sm:text-sm">
               <thead className="bg-zinc-50 dark:bg-zinc-950/70 text-zinc-600 dark:text-zinc-400 border-b border-zinc-200 dark:border-zinc-800 font-medium">
                 <tr>
                   <th scope="col" className="py-3 px-4 sm:px-6">Momentum Libur</th>
@@ -305,29 +305,29 @@ export default function CalendarSeoContent() {
 
       {/* 3. KPI Section: Kalender Jawa 2027 & Weton Pasaran */}
       <section id="kalender-jawa" className="scroll-mt-24 space-y-6">
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 p-6 sm:p-8 space-y-4 shadow-sm">
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/90 p-4 sm:p-6 lg:p-8 space-y-4 shadow-sm min-w-0">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60">
             <span>Siklus Kultural Panca Wara & Penanggalan Hijriah</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             Kalender Jawa 2027: Siklus Pasaran, Weton & Padanan Hijriah
           </h2>
 
           {/* 40-60 Word Direct Answer Block for AI Overviews */}
-          <div className="p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-950/60 text-sm sm:text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
+          <div className="p-3.5 sm:p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-950/60 text-sm sm:text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
             <strong>Kalender Jawa 2027</strong> menggabungkan penanggalan masehi dengan siklus 5 hari pasaran (<strong>Panca Wara</strong>): <strong>Legi, Pahing, Pon, Wage, dan Kliwon</strong>. Sistem ini dipadukan secara harmonis dengan penanggalan lunar Hijriah (Tahun 1448 H hingga 1449 H), memungkinkan masyarakat mengetahui weton harian, neptu hari, serta hari baik untuk upacara adat dan perhelatan keluarga.
           </div>
 
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
             Pada tahun 2027, tanggal 1 Januari 2027 bertepatan dengan hari <strong>Jumat Pahing</strong>. Algoritma Kalender Gandiva Labs menghitung siklus 5 hari secara deterministik tanpa jeda, memastikan akurasi mutlak untuk setiap tanggal dalam setahun.
           </p>
         </div>
 
         {/* Tabel Panca Wara & Neptu */}
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
-          <div className="p-5 sm:p-6 border-b border-zinc-200 dark:border-zinc-800">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm min-w-0">
+          <div className="p-4 sm:p-6 border-b border-zinc-200 dark:border-zinc-800">
+            <h3 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-100">
               Karakter 5 Pasaran Jawa (Panca Wara) & Nilai Neptu
             </h3>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
@@ -335,8 +335,8 @@ export default function CalendarSeoContent() {
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs sm:text-sm">
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[480px] text-left text-xs sm:text-sm">
               <thead className="bg-zinc-50 dark:bg-zinc-950/70 text-zinc-600 dark:text-zinc-400 border-b border-zinc-200 dark:border-zinc-800 font-medium">
                 <tr>
                   <th scope="col" className="py-3 px-4 sm:px-6">Pasaran</th>
@@ -377,11 +377,11 @@ export default function CalendarSeoContent() {
 
       {/* 4. Interactive FAQ Section (Schema.org FAQPage Aligned) */}
       <section id="faq" className="scroll-mt-24 space-y-6">
-        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 sm:p-8 space-y-2 shadow-sm">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6 lg:p-8 space-y-2 shadow-sm min-w-0">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             Pertanyaan yang Sering Diajukan (FAQ) Seputar Kalender 2027
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
             Jawaban lengkap atas pertanyaan populer seputar hari libur nasional, rekomendasi cuti, dan penanggalan Jawa 2027.
           </p>
         </div>

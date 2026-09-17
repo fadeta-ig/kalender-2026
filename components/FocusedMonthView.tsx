@@ -55,21 +55,21 @@ export default function FocusedMonthView({
   return (
     <section className="space-y-5 animate-fade-in">
       {/* Navigation Header */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 sm:p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 w-full min-w-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           <button
             type="button"
             onClick={onBackToOverview}
-            className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300 transition-colors flex items-center gap-1.5 shrink-0"
+            className="px-2.5 sm:px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-medium text-zinc-700 dark:text-zinc-300 transition-colors flex items-center gap-1.5 shrink-0"
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3.5 h-3.5 pointer-events-none shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
             <span>12 Bulan</span>
           </button>
 
-          <div>
-            <h2 className="text-lg sm:text-xl font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
+          <div className="min-w-0">
+            <h2 className="text-base sm:text-xl font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-1.5 sm:gap-2 truncate">
               <span>{monthData.monthName}</span>
               <span className="text-zinc-400 dark:text-zinc-500 font-normal">{monthData.year}</span>
             </h2>
@@ -272,13 +272,13 @@ export default function FocusedMonthView({
                 <div
                   key={holiday.dateString}
                   onClick={() => onSelectDate?.(holiday.dateString)}
-                  className="flex items-center justify-between p-3 rounded-lg border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/20 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors cursor-pointer"
+                  className="flex items-center justify-between p-3 rounded-lg border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/20 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors cursor-pointer w-full min-w-0"
                 >
-                  <div className="space-y-0.5 pr-2">
-                    <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+                  <div className="space-y-0.5 pr-2 min-w-0 flex-1">
+                    <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium truncate block">
                       {dayNameFormatter.format(dayDate)}
                     </span>
-                    <p className="text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                    <p className="text-xs sm:text-sm font-semibold text-zinc-800 dark:text-zinc-200 break-words">
                       {holiday.holidayName}
                     </p>
                   </div>

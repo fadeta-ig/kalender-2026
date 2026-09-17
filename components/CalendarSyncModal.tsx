@@ -43,20 +43,20 @@ export default function CalendarSyncModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-zinc-950/60 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 space-y-5 transition-colors shadow-none"
+        className="w-full max-w-lg rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6 space-y-4 sm:space-y-5 transition-colors shadow-none max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
+        <div className="flex items-start justify-between gap-3">
+          <div className="space-y-1 min-w-0 flex-1">
+            <h3 className="text-base sm:text-lg font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
               Sinkronisasi ke Kalender
             </h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 font-normal">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 font-normal leading-relaxed">
               Simpan seluruh tanggal merah {year} ke Apple Calendar (iPhone/Mac), Google Calendar, atau Outlook dalam 1 klik.
             </p>
           </div>
