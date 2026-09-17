@@ -30,21 +30,25 @@ export function useFeatureTour(totalSteps: number = 5) {
     setIsTourOpen(true);
   }, []);
 
-  const closeTour = useCallback(() => {
+  const closeTour = useCallback((dontShowAgain: boolean = true) => {
     setIsTourOpen(false);
     try {
-      localStorage.setItem(STORAGE_KEY, "true");
+      if (dontShowAgain) {
+        localStorage.setItem(STORAGE_KEY, "true");
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
     } catch {
       // Abaikan error localStorage
     }
   }, []);
 
-  const nextStep = useCallback(() => {
+  const nextStep = useCallback((dontShowAgain: boolean = true) => {
     setCurrentStep((prev) => {
       if (prev < totalSteps - 1) {
         return prev + 1;
       }
-      closeTour();
+      closeTour(dontShowAgain);
       return prev;
     });
   }, [totalSteps, closeTour]);

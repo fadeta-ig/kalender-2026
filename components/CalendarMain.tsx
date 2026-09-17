@@ -191,10 +191,15 @@ export default function CalendarMain() {
     setIsShareModalOpen(true);
   };
 
+  const handleStartTour = () => {
+    setActiveTab("calendar");
+    startTour();
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col transition-colors duration-150">
       {/* Top Enterprise Navbar - HANYA ADA Panduan, Tur Panduan, & Toggle Tema */}
-      <Navbar onStartTour={startTour} />
+      <Navbar onStartTour={handleStartTour} />
 
       {/* Main Content Area */}
       <main className="flex-1 mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
@@ -330,19 +335,17 @@ export default function CalendarMain() {
         ) : (
           <div className="space-y-6">
             {/* Quick Month Navigator Bar & Unified Action Tools (Tahun, Bagikan, PDF, Sinkron) */}
-            <div id="tour-month-nav">
-              <MonthQuickNavigator
-                calendarMonths={calendarMonths}
-                selectedMonth={selectedMonth}
-                onSelectMonth={(m) => setSelectedMonth(m)}
-                onOpenMonthModal={() => setIsMonthModalOpen(true)}
-                selectedYear={selectedYear}
-                onSelectYear={handleYearChange}
-                onExportPDF={handleExportPDF}
-                onOpenShare={() => handleOpenShare()}
-                onOpenSync={() => setIsSyncModalOpen(true)}
-              />
-            </div>
+            <MonthQuickNavigator
+              calendarMonths={calendarMonths}
+              selectedMonth={selectedMonth}
+              onSelectMonth={(m) => setSelectedMonth(m)}
+              onOpenMonthModal={() => setIsMonthModalOpen(true)}
+              selectedYear={selectedYear}
+              onSelectYear={handleYearChange}
+              onExportPDF={handleExportPDF}
+              onOpenShare={() => handleOpenShare()}
+              onOpenSync={() => setIsSyncModalOpen(true)}
+            />
 
             {viewMode === "list" ? (
               <CalendarListView schedules={schedules} />

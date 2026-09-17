@@ -77,9 +77,9 @@ export default function MonthQuickNavigator({
       {/* ========================================================= */}
       {/* TINGKAT 1: NAVIGASI BULAN (Mobile vs Desktop)            */}
       {/* ========================================================= */}
-
-      {/* 1A. Tampilan Mobile (< 640px) */}
-      <div className="block sm:hidden">
+      <div id="tour-month-nav" className="w-full min-w-0">
+        {/* 1A. Tampilan Mobile (< 640px) */}
+        <div className="block sm:hidden">
         <div className="flex items-center justify-between gap-1 w-full min-w-0">
           {/* Tombol Panah Mundur */}
           <button
@@ -234,6 +234,7 @@ export default function MonthQuickNavigator({
           ))}
         </div>
       </div>
+    </div>
 
       {/* ========================================================= */}
       {/* TINGKAT 2: ACTION TOOLBAR (Tahun, Bagikan, PDF, Sinkron)  */}
