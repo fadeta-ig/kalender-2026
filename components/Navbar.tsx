@@ -11,6 +11,7 @@ type NavbarProps = {
   onExportPDF: () => void;
   onOpenSync: () => void;
   onOpenShare?: () => void;
+  onStartTour?: () => void;
 };
 
 export default function Navbar({
@@ -19,6 +20,7 @@ export default function Navbar({
   onExportPDF,
   onOpenSync,
   onOpenShare,
+  onStartTour,
 }: NavbarProps) {
   const pathname = usePathname();
   const isPanduan = pathname === "/panduan";
@@ -93,7 +95,7 @@ export default function Navbar({
         {/* Right side: Year Switcher, Mobile Panduan Link, Share, Sync, Export PDF & Theme Switcher */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Compact Year Switcher: 2026 / 2027 */}
-          <div className="flex items-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 p-0.5 sm:p-1">
+          <div id="tour-year-selector" className="flex items-center rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 p-0.5 sm:p-1">
             <button
               type="button"
               onClick={() => onSelectYear(2026)}
@@ -155,6 +157,7 @@ export default function Navbar({
 
           {/* Sync to Calendar Button */}
           <button
+            id="tour-sync-btn"
             type="button"
             onClick={onOpenSync}
             className="inline-flex items-center justify-center h-8 sm:h-auto gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800/80 text-xs font-medium transition-colors"
@@ -183,6 +186,22 @@ export default function Navbar({
             </svg>
             <span className="hidden lg:inline">Unduh PDF</span>
           </button>
+
+          {/* Tombol Bantuan / Tur Panduan Fitur */}
+          {onStartTour && (
+            <button
+              type="button"
+              onClick={onStartTour}
+              className="inline-flex items-center justify-center h-8 w-8 sm:h-auto sm:w-auto sm:px-2.5 sm:py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-800/80 text-xs font-medium transition-colors"
+              title="Buka panduan fitur kalender interaktif"
+              aria-label="Panduan Tur Fitur"
+            >
+              <svg className="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M12 18h.01" />
+              </svg>
+              <span className="hidden xl:inline ml-1">Tur Fitur</span>
+            </button>
+          )}
 
           <ThemeToggle />
         </div>

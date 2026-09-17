@@ -19,6 +19,8 @@ import LeaveRecommendations from "./LeaveRecommendations";
 import LeaveBudgetSimulator from "./LeaveBudgetSimulator";
 import CalendarSyncModal from "./CalendarSyncModal";
 import ShareLeaveModal, { type ShareLeavePlanData } from "./ShareLeaveModal";
+import FeatureTourGuide from "./FeatureTourGuide";
+import { useFeatureTour } from "@/hooks/useFeatureTour";
 
 export default function CalendarMain() {
   const [, startTransition] = useTransition();
@@ -68,6 +70,17 @@ export default function CalendarMain() {
     datesDescription: "Momentum Iduladha & Waisak (15 - 23 Mei 2027)",
     shareUrl: "https://calendar.gandivalabs.my.id",
   });
+
+  // Fitur Interactive Tour Guide
+  const {
+    isTourOpen,
+    currentStep,
+    startTour,
+    closeTour,
+    nextStep,
+    prevStep,
+    goToStep,
+  } = useFeatureTour();
 
   // Ambil data hari libur resmi untuk tahun yang dipilih
   const yearData = useMemo(() => getCalendarData(selectedYear), [selectedYear]);
@@ -187,6 +200,7 @@ export default function CalendarMain() {
         onExportPDF={handleExportPDF}
         onOpenSync={() => setIsSyncModalOpen(true)}
         onOpenShare={() => handleOpenShare()}
+        onStartTour={startTour}
       />
 
       {/* Main Content Area */}
@@ -220,6 +234,7 @@ export default function CalendarMain() {
             </button>
 
             <button
+              id="tour-tab-tips"
               type="button"
               onClick={() => startTransition(() => setActiveTab("tips"))}
               className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
@@ -241,6 +256,7 @@ export default function CalendarMain() {
             <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full lg:w-auto">
               {/* Toggle Fitur #5: Penanggalan Budaya (Hijriah & Pasaran Jawa) */}
               <button
+                id="tour-cultural-toggle"
                 type="button"
                 onClick={() => setShowCulturalOverlay(!showCulturalOverlay)}
                 className={`px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors flex items-center gap-1.5 ${
@@ -324,12 +340,14 @@ export default function CalendarMain() {
           /* Grid Mode: dengan Quick Month Navigator & Focused View */
           <div className="space-y-6">
             {/* Quick Month Navigator Bar */}
-            <MonthQuickNavigator
-              calendarMonths={calendarMonths}
-              selectedMonth={selectedMonth}
-              onSelectMonth={(m) => setSelectedMonth(m)}
-              onOpenMonthModal={() => setIsMonthModalOpen(true)}
-            />
+            <div id="tour-month-nav">
+              <MonthQuickNavigator
+                calendarMonths={calendarMonths}
+                selectedMonth={selectedMonth}
+                onSelectMonth={(m) => setSelectedMonth(m)}
+                onOpenMonthModal={() => setIsMonthModalOpen(true)}
+              />
+            </div>
 
             {/* Jika ada bulan yang dipilih: Tampilkan Focused Single Month View */}
             {selectedMonth !== null ? (
@@ -520,13 +538,23 @@ export default function CalendarMain() {
             </div>
           </div>
 
-          {/* Bottom Bar: Copyright (Tautan llms.txt & sitemap.xml dihilangkan dari tampilan visual) */}
+          {/* Bottom Bar: Copyright */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[11px] text-zinc-400 dark:text-zinc-500 pt-2">
             <div>
               © {new Date().getFullYear()} Gandiva Labs. Seluruh hak cipta dilindungi undang-undang.
             </div>
-            <div className="text-zinc-400 dark:text-zinc-500">
-              calendar.gandivalabs.my.id
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={startTour}
+                className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer"
+              >
+                Panduan Fitur
+              </button>
+              <span>•</span>
+              <span className="text-zinc-400 dark:text-zinc-500">
+                calendar.gandivalabs.my.id
+              </span>
             </div>
           </div>
         </footer>
@@ -557,6 +585,16 @@ export default function CalendarMain() {
         isOpen={isShareModalOpen}
         planData={sharePlanData}
         onClose={() => setIsShareModalOpen(false)}
+      />
+
+      {/* Interactive Feature Tour Guide */}
+      <FeatureTourGuide
+        isOpen={isTourOpen}
+        currentStep={currentStep}
+        onNext={nextStep}
+        onPrev={prevStep}
+        onClose={closeTour}
+        onGoToStep={goToStep}
       />
     </div>
   );
