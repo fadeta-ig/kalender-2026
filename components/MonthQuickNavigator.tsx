@@ -13,6 +13,7 @@ type MonthQuickNavigatorProps = {
   onExportPDF: () => void;
   onOpenShare: () => void;
   onOpenSync: () => void;
+  onOpenExportModal?: () => void;
 };
 
 const QUARTERS = [
@@ -47,6 +48,7 @@ export default function MonthQuickNavigator({
   onExportPDF,
   onOpenShare,
   onOpenSync,
+  onOpenExportModal,
 }: MonthQuickNavigatorProps) {
   // Hitung jumlah hari libur per bulan untuk badge informatif
   const holidayCounts = calendarMonths.map((m) => {
@@ -305,6 +307,23 @@ export default function MonthQuickNavigator({
             <span className="hidden sm:inline">Unduh PDF</span>
             <span className="sm:hidden">PDF</span>
           </button>
+
+          {/* Tombol Ekspor Data Produktivitas (Notion/Sheets/Obsidian) */}
+          {onOpenExportModal && (
+            <button
+              type="button"
+              onClick={onOpenExportModal}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100 text-xs font-medium transition-colors shadow-xs"
+              title="Ekspor data kalender ke format Notion, Google Sheets, atau Obsidian"
+              aria-label="Ekspor Data Produktivitas"
+            >
+              <svg className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 pointer-events-none shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776" />
+              </svg>
+              <span className="hidden sm:inline">Ekspor Data</span>
+              <span className="sm:hidden">Ekspor</span>
+            </button>
+          )}
 
           {/* Tombol Sinkronkan ke Google/Apple Calendar */}
           <button

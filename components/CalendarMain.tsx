@@ -20,6 +20,8 @@ import LeaveBudgetSimulator from "./LeaveBudgetSimulator";
 import CalendarSyncModal from "./CalendarSyncModal";
 import ShareLeaveModal, { type ShareLeavePlanData } from "./ShareLeaveModal";
 import FeatureTourGuide from "./FeatureTourGuide";
+import BurnoutRadarCard from "./BurnoutRadarCard";
+import ProductivityExportModal from "./ProductivityExportModal";
 import { useFeatureTour } from "@/hooks/useFeatureTour";
 
 export default function CalendarMain() {
@@ -62,6 +64,9 @@ export default function CalendarMain() {
 
   // State untuk Fitur Viral: Modal Bagikan Rencana Cuti
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  // State untuk Fitur Produktivitas: Modal Ekspor Data (Notion, Sheets, Obsidian)
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [sharePlanData, setSharePlanData] = useState<ShareLeavePlanData>({
     year: 2027,
     title: "Libur Panjang & Cuti Hemat 2027",
@@ -314,6 +319,15 @@ export default function CalendarMain() {
         {/* Tab View Content */}
         {activeTab === "tips" ? (
           <div className="space-y-8 animate-fade-in">
+            {/* Fitur #4: Radar Anti-Keletihan & Keseimbangan Kerja (Burnout Radar) */}
+            <BurnoutRadarCard
+              year={selectedYear}
+              holidays={yearData.holidays}
+              jointLeave={yearData.jointLeave}
+              customMarkedDates={customMarkedDates}
+              onApplyRechargeLeave={handleTogglePersonalLeave}
+            />
+
             {/* Fitur #1: Smart Leave Budget Simulator */}
             <LeaveBudgetSimulator
               quota={leaveQuota}
@@ -345,6 +359,7 @@ export default function CalendarMain() {
               onExportPDF={handleExportPDF}
               onOpenShare={() => handleOpenShare()}
               onOpenSync={() => setIsSyncModalOpen(true)}
+              onOpenExportModal={() => setIsExportModalOpen(true)}
             />
 
             {viewMode === "list" ? (
@@ -584,6 +599,15 @@ export default function CalendarMain() {
         isOpen={isShareModalOpen}
         planData={sharePlanData}
         onClose={() => setIsShareModalOpen(false)}
+      />
+
+      {/* Fitur #5: Modal Ekspor Data Produktivitas (Notion, Google Sheets, Obsidian) */}
+      <ProductivityExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        year={selectedYear}
+        holidays={yearData.holidays}
+        jointLeave={yearData.jointLeave}
       />
 
       {/* Interactive Feature Tour Guide */}
